@@ -3,10 +3,25 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:dataset="clr-namespace:Digital_twin.Dataset"
         xmlns:local="clr-namespace:Digital_twin"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+
+    <Window.DataContext>
+        <dataset:DataManager/>
+    </Window.DataContext>
+
+
     <Grid>
-        
+        <Canvas Height="400" Width="500" Margin="33,17,267,17"/>
+        <ListBox Height="150" Width="200" ItemsSource="{Binding Buildings}" Margin="559,17,41,267">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Name}"/>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
     </Grid>
 </Window>
