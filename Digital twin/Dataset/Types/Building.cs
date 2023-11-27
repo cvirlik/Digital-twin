@@ -4,19 +4,34 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Shapes;
+using System.Windows;
 using OsmSharp;
+using Digital_twin.Dataset.Support;
+using Digital_twin.Draw_tools;
 
 namespace Digital_twin.Dataset.Types
 {
-    internal class Building
+    public class Building
     {
         private Way way { get; set; }
         private ObservableCollection<Node> nodes { get; set; }
+        private ObservableCollection<Segment> segmentsOuter { get; set; } = new ObservableCollection<Segment>(); // Building wall outline
 
-        public Building(Way _way, ObservableCollection<Node> _nodes)
+        // Used as a starting point
+        private double maxLatitude;
+        private double minLongitude;
+        public Building(Way _way, ObservableCollection<Node> _nodes, double _maxLatitude, double _minLongitude)
         {
             way = _way;
             nodes = _nodes;
+            /*maxLatitude = nodes.Max(node => (double)node.Latitude);
+            minLongitude = nodes.Min(node => (double)node.Longitude);*/
+            maxLatitude = _maxLatitude;
+            minLongitude = _minLongitude;
+            DrawingTools.SplitToSegments(nodes, segmentsOuter, maxLatitude, minLongitude, false);
         }
         public string Name
         {
@@ -28,8 +43,44 @@ namespace Digital_twin.Dataset.Types
                     return "Unnamed building";
             }
         }
+        public string LevelsCount
+        {
+            get
+            {
+                if (way.Tags.ContainsKey("building:levels"))
+                    return way.Tags["building:levels"];
+                else
+                    return "1";
+            }
+        }
+
+        public string MaxLevel
+        {
+            get
+            {
+                if (way.Tags.ContainsKey("max_level"))
+                    return way.Tags["max_level"];
+                else
+                    return "1";
+            }
+        }
+
+        public string MinLevel
+        {
+            get
+            {
+                if (way.Tags.ContainsKey("min_level"))
+                    return way.Tags["min_level"];
+                else
+                    return "1";
+            }
+        }
 
         public Way Way { get { return way; } }
         public ObservableCollection<Node> Nodes { get { return nodes; } }
+        public ObservableCollection<Segment> SegmentsOuter { get { return segmentsOuter; } }
+
+        public double MaxLatitude { get { return maxLatitude; } }
+        public double MinLongitude { get { return minLongitude; } }
     }
 }

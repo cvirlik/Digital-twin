@@ -16,7 +16,7 @@ namespace Digital_twin.File_tools
                 collection.Add(item);
             } else
             {
-                Console.Error.WriteLine("Current element (id: %s) alredy was added to collection! Check if dataset was correct!", keySelector(item).ToString());
+                Console.Error.WriteLine("Current element (id: {0}) alredy was added to collection! Check if dataset was correct!", keySelector(item).ToString());
             }
         }
         public static void ReadOSM(string filepath, 
@@ -24,7 +24,7 @@ namespace Digital_twin.File_tools
             ObservableCollection<Way> Ways, 
             ObservableCollection<Relation> Relations)
         {
-            Console.WriteLine("Start reading file %s...", filepath);
+            Console.WriteLine("Start reading file {0}...", filepath);
 
             using (var fileStream = new FileInfo(filepath).OpenRead())
             {

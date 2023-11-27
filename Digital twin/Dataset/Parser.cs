@@ -1,4 +1,5 @@
-﻿using Digital_twin.File_tools;
+﻿using Digital_twin.Dataset.Types;
+using Digital_twin.File_tools;
 using OsmSharp;
 using System;
 using System.Collections.Generic;
@@ -25,7 +26,7 @@ namespace Digital_twin.Dataset
             }
             return BuildingNodes;
         }
-        public static ObservableCollection<Way> getBuilding(ObservableCollection<Way> Ways)
+        public static ObservableCollection<Way> getBuildings(ObservableCollection<Way> Ways)
         {
             ObservableCollection<Way> Buildings = new ObservableCollection<Way>();
             
@@ -37,6 +38,20 @@ namespace Digital_twin.Dataset
                 }
             }
             return Buildings;
+        }
+        public static ObservableCollection<Room> getIndoorRoomLayout(ObservableCollection<Node> Nodes, 
+                                                                     ObservableCollection<Way> Ways, string level, Building currentBuilding) 
+        {
+            ObservableCollection<Room> IndoorLayout = new ObservableCollection<Room>();
+
+            foreach (Way way in Ways)
+            {
+                if (way.Tags != null && way.Tags.Contains("indoor", "room") && way.Tags.Contains("level", level))
+                {
+                    IndoorLayout.Add(new Room(way, getNodes(Nodes, way.Nodes), currentBuilding));
+                }
+            }
+            return IndoorLayout;
         }
     }
 }

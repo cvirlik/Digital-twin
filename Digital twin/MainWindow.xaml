@@ -12,13 +12,68 @@
         <dataset:DataManager/>
     </Window.DataContext>
 
+    <Window.Resources>
+        <Style TargetType="Line" x:Key="PlaneLine">
+            <Setter Property="Stroke" Value="Black"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsInner}" Value="True">
+                    <Setter Property="StrokeThickness" Value="2"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsInner}" Value="False">
+                    <Setter Property="StrokeThickness" Value="3"/>
+                </DataTrigger>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True"/>
+                        <Condition Binding="{Binding IsInner}" Value="True"/>
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Stroke" Value="#FFB85D31"/>
+                    <Setter Property="StrokeThickness" Value="6"/>
+                </MultiDataTrigger>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True"/>
+                        <Condition Binding="{Binding IsInner}" Value="False"/>
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Stroke" Value="#FF3453B5"/>
+                    <Setter Property="StrokeThickness" Value="6"/>
+                </MultiDataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
 
     <Grid>
-        <Canvas Height="400" Width="500" Margin="33,17,267,17"/>
-        <ListBox Height="150" Width="200" ItemsSource="{Binding Buildings}" Margin="559,17,41,267">
+        <ListBox  Height="400" Width="500" Margin="33,17,267,17" Grid.Row="1" ItemsSource="{Binding SelectedLevel.AllSegments}" SelectedItem="{Binding SelectedLevel}">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="IsSelected" Value="{Binding Content.IsSelected, Mode=TwoWay, RelativeSource={RelativeSource Self}}"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ListBoxItem">
+                                <ContentPresenter/>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListBox.ItemContainerStyle>
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas></Canvas>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Line Style="{StaticResource PlaneLine}" 
+                        X1="{Binding X1}" Y1="{Binding Y1}" X2="{Binding X2}" Y2="{Binding Y2}"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+
+        </ListBox>
+        <ListBox Height="150" Width="200" ItemsSource="{Binding Levels}" SelectedItem="{Binding SelectedLevel}" Margin="559,17,41,267">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding Name}"/>
+                    <TextBlock Text="{Binding Name, StringFormat='Level {0}'}"/>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>

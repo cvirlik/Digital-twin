@@ -79,7 +79,14 @@
     </Compile>
     <Compile Include="Dataset\DataManager.cs" />
     <Compile Include="Dataset\Parser.cs" />
+    <Compile Include="Dataset\Support\GPSTools.cs" />
+    <Compile Include="Dataset\Support\RelayCommand.cs" />
     <Compile Include="Dataset\Types\Building.cs" />
+    <Compile Include="Dataset\Support\ViewModelBase.cs" />
+    <Compile Include="Dataset\Types\Level.cs" />
+    <Compile Include="Dataset\Types\Room.cs" />
+    <Compile Include="Dataset\Types\Segment.cs" />
+    <Compile Include="Draw tools\DrawingTools.cs" />
     <Compile Include="File tools\ReaderOSM.cs" />
     <Compile Include="File tools\WriterOSM.cs" />
     <Compile Include="MainWindow.xaml.cs">
@@ -117,5 +124,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
