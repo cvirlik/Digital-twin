@@ -1,16 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Shapes;
-using System.Windows;
+﻿using System.Collections.ObjectModel;
 using OsmSharp;
-using Digital_twin.Dataset.Support;
 using Digital_twin.Draw_tools;
+using Digital_twin.Dataset.Types.Secondary;
 
 namespace Digital_twin.Dataset.Types
 {

@@ -1,16 +1,8 @@
 ﻿using Digital_twin.Dataset.Types;
 using Digital_twin.File_tools;
 using OsmSharp;
-using OsmSharp.Tags;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Globalization;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 
 namespace Digital_twin.Dataset

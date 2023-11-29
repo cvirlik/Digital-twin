@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:dataset="clr-namespace:Digital_twin.Dataset"
+        xmlns:template="clr-namespace:Digital_twin.Dataset.Support"
         xmlns:local="clr-namespace:Digital_twin"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
@@ -40,11 +41,31 @@
                 </MultiDataTrigger>
             </Style.Triggers>
         </Style>
+
+        <Style TargetType="Polygon" x:Key="PolygomRoom">
+            <Setter Property="Fill" Value="DarkTurquoise"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True">
+                    <Setter Property="Fill" Value="DarkSeaGreen"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <DataTemplate x:Key="SegmentTemplate">
+            <Line Style="{StaticResource PlaneLine}" X1="{Binding Point1.X}" Y1="{Binding Point1.Y}" X2="{Binding Point2.X}" Y2="{Binding Point2.Y}"/>
+        </DataTemplate>
+        <DataTemplate x:Key="PolygonTemplate">
+            <Polygon Style="{StaticResource PolygomRoom}" Points="{Binding Vertices}"/>
+        </DataTemplate>
     </Window.Resources>
 
-
     <Grid>
-        <ListBox  Height="400" Width="500" Margin="33,17,267,17" Grid.Row="1" ItemsSource="{Binding SelectedLevel.AllSegments}" SelectedItem="{Binding SelectedLevel}">
+        <ListBox  Height="400" Width="500" Margin="33,17,267,17" Grid.Row="1" ItemsSource="{Binding SelectedLevel.AllShapes}" SelectedItem="{Binding SelectedLevel}">
+            <ListBox.ItemTemplateSelector>
+                <template:ShapeTemplateSelector
+                    SegmentTemplate="{StaticResource SegmentTemplate}"
+                    PolygonTemplate="{StaticResource PolygonTemplate}" />
+            </ListBox.ItemTemplateSelector>
             <ListBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">
                     <Setter Property="IsSelected" Value="{Binding Content.IsSelected, Mode=TwoWay, RelativeSource={RelativeSource Self}}"/>
@@ -62,14 +83,8 @@
                     <Canvas></Canvas>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Line Style="{StaticResource PlaneLine}" 
-                        X1="{Binding X1}" Y1="{Binding Y1}" X2="{Binding X2}" Y2="{Binding Y2}"/>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-
         </ListBox>
+        
         <ListBox Height="150" Width="200" ItemsSource="{Binding Levels}" SelectedItem="{Binding SelectedLevel}" Margin="559,17,41,267">
             <ListBox.ItemTemplate>
                 <DataTemplate>

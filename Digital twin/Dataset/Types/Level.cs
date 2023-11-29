@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Digital_twin.Dataset.Types.Primary;
+using Digital_twin.Dataset.Types.Secondary;
+using System;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Digital_twin.Dataset.Types
 {
@@ -11,7 +9,6 @@ namespace Digital_twin.Dataset.Types
     {
         private ObservableCollection<Room> rooms { get; set; } = new ObservableCollection<Room>();
         private ObservableCollection<Building> buildings { get; set; } = new ObservableCollection<Building>();
-        // To Do: building lon0 lat0 point to rooms
         
         private int level;
 
@@ -21,11 +18,15 @@ namespace Digital_twin.Dataset.Types
             buildings = _buildings;
             level = _level;
         }
-        public ObservableCollection<Segment> AllSegments
+        public ObservableCollection<IShape> AllShapes
         {
             get
             {
-                var allSegments = new ObservableCollection<Segment>();
+                var allSegments = new ObservableCollection<IShape>();
+                foreach (var room in Rooms)
+                { 
+                    allSegments.Add(room.Polygon);
+                }
                 foreach (var room in Rooms)
                 {
                     foreach (var segment in room.SegmentsOuter)
