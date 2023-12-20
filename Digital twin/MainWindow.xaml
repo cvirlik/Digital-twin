@@ -14,6 +14,7 @@
     </Window.DataContext>
 
     <Window.Resources>
+        <template:PointToMarginConverter x:Key="PointToMarginConverter"/>
         <Style TargetType="Line" x:Key="PlaneLine">
             <Setter Property="Stroke" Value="Black"/>
             <Style.Triggers>
@@ -43,10 +44,24 @@
         </Style>
 
         <Style TargetType="Polygon" x:Key="PolygomRoom">
-            <Setter Property="Fill" Value="DarkTurquoise"/>
             <Style.Triggers>
+                <DataTrigger Binding="{Binding IsInner}" Value="True">
+                    <Setter Property="Fill" Value="DarkTurquoise"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsInner}" Value="False">
+                    <Setter Property="Fill" Value="#FF7BBEBE"/>
+                </DataTrigger>
                 <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True">
                     <Setter Property="Fill" Value="DarkSeaGreen"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="Ellipse" x:Key="PointStyle">
+            <Setter Property="Fill" Value="Red"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True">
+                    <Setter Property="Fill" Value="Blue"/>
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -57,14 +72,22 @@
         <DataTemplate x:Key="PolygonTemplate">
             <Polygon Style="{StaticResource PolygomRoom}" Points="{Binding Vertices}"/>
         </DataTemplate>
+        <DataTemplate x:Key="PointTemplate">
+            <Ellipse Style="{StaticResource PointStyle}" Width="5" Height="5">
+                <Ellipse.RenderTransform>
+                    <TranslateTransform X="{Binding X}" Y="{Binding Y}" />
+                </Ellipse.RenderTransform>
+            </Ellipse>
+        </DataTemplate>
     </Window.Resources>
 
     <Grid>
-        <ListBox  Height="400" Width="500" Margin="33,17,267,17" Grid.Row="1" ItemsSource="{Binding SelectedLevel.AllShapes}" SelectedItem="{Binding SelectedLevel}">
+        <ListBox Name="CanvasListBox"  Height="400" Width="500" Margin="33,17,267,17" Grid.Row="1" ItemsSource="{Binding SelectedLevel.shapes}" SelectedItem="{Binding SelectedShape}">
             <ListBox.ItemTemplateSelector>
                 <template:ShapeTemplateSelector
                     SegmentTemplate="{StaticResource SegmentTemplate}"
-                    PolygonTemplate="{StaticResource PolygonTemplate}" />
+                    PolygonTemplate="{StaticResource PolygonTemplate}" 
+                    PointTemplate="{StaticResource PointTemplate}" />
             </ListBox.ItemTemplateSelector>
             <ListBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">
@@ -84,7 +107,7 @@
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
         </ListBox>
-        
+
         <ListBox Height="150" Width="200" ItemsSource="{Binding Levels}" SelectedItem="{Binding SelectedLevel}" Margin="559,17,41,267">
             <ListBox.ItemTemplate>
                 <DataTemplate>
@@ -92,6 +115,30 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
+
+        <Grid Margin="559,201,41,52">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <ListView Name="TagListView" Grid.Column="0" ItemsSource="{Binding SelectedShape.Tags}">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Key" DisplayMemberBinding="{Binding Key}" />
+                        <GridViewColumn Header="Value" DisplayMemberBinding="{Binding Value}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+
+            <StackPanel Grid.Column="1" Orientation="Vertical" Margin="8,0,-8,0">
+                <Label Content="Key:"/>
+                <TextBox Name="KeyTextBox" Text="{Binding KeyText, UpdateSourceTrigger=PropertyChanged}"/>
+                <Label Content="Value:"/>
+                <TextBox Name="ValueTextBox" Text="{Binding ValueText, UpdateSourceTrigger=PropertyChanged}"/>
+                <Button Content="Add/Update Tag" Command="{Binding AddCommand}"/>
+            </StackPanel>
+        </Grid>
 
     </Grid>
 </Window>

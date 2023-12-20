@@ -26,5 +26,10 @@ namespace Digital_twin.Dataset
             OnPropertyChanged(propertyName);
             return true;
         }
+
+        protected void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

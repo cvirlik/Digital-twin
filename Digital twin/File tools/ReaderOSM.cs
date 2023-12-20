@@ -24,7 +24,7 @@ namespace Digital_twin.File_tools
             ObservableCollection<Way> Ways, 
             ObservableCollection<Relation> Relations)
         {
-            Console.WriteLine("Start reading file {0}...", filepath);
+            //Console.WriteLine("Start reading file {0}...", filepath);
 
             using (var fileStream = new FileInfo(filepath).OpenRead())
             {
@@ -33,7 +33,7 @@ namespace Digital_twin.File_tools
                 foreach (var element in source) // Go through objects
                 {
          
-                    Console.WriteLine($"Type: {element.Type}, Id: {element.Id}");
+                    //Console.WriteLine($"Type: {element.Type}, Id: {element.Id}");
 
                     switch (element)
                     {

@@ -1,53 +1,47 @@
 ﻿using Digital_twin.Dataset.Types.Primary;
-using Digital_twin.Dataset.Types.Secondary;
+using Digital_twin.Dataset.Types.Tertiary;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Windows.Controls;
 
 namespace Digital_twin.Dataset.Types
 {
-    public class Level
+    public class Level: ViewModelBase
     {
-        private ObservableCollection<Room> rooms { get; set; } = new ObservableCollection<Room>();
-        private ObservableCollection<Building> buildings { get; set; } = new ObservableCollection<Building>();
-        
-        private int level;
+        public ObservableCollection<CanvasObject> canvasObjects { get; set; } = new ObservableCollection<CanvasObject>();
+        public ObservableCollection<IShape> shapes { get; set; } = new ObservableCollection<IShape>();
 
-        public Level(int _level, ObservableCollection<Room> _rooms, ObservableCollection<Building> _buildings)
+        private int level;
+        private int lastCount = -1;
+
+        public Level(int _level)
         {
-            rooms = _rooms;
-            buildings = _buildings;
             level = _level;
         }
-        public ObservableCollection<IShape> AllShapes
+        public ObservableCollection<IShape> Shapes
         {
             get
             {
-                var allSegments = new ObservableCollection<IShape>();
-                foreach (var room in Rooms)
-                { 
-                    allSegments.Add(room.Polygon);
-                }
-                foreach (var room in Rooms)
-                {
-                    foreach (var segment in room.SegmentsOuter)
-                    {
-                        allSegments.Add(segment);
-                    }
-                }
-                foreach (var building in buildings)
-                {
-                    foreach (var segment in building.SegmentsOuter)
-                    {
-                        allSegments.Add(segment);
-                    }
-                }
-                return allSegments;
+                return shapes;
             }
+        }
+
+        public void AddObjects(CanvasObject obj)
+        {
+            canvasObjects.Add(obj);
+            foreach (IShape shape in obj.Shapes)
+            {
+                shapes.Add(shape);
+            }
+        }
+        public void AddObjects(IShape obj)
+        {
+            shapes.Add(obj);
         }
 
         public int LevelNum { get { return level; } }  
         public string Name { get { return level.ToString(); } }  
-        public ObservableCollection<Room> Rooms { get {  return rooms; } }
-        public ObservableCollection<Building > Buildings { get { return buildings;} }
     }
 }

@@ -8,6 +8,7 @@ namespace Digital_twin.Dataset.Support
     {
         public DataTemplate SegmentTemplate { get; set; }
         public DataTemplate PolygonTemplate { get; set; }
+        public DataTemplate PointTemplate { get; set; }
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
@@ -16,6 +17,9 @@ namespace Digital_twin.Dataset.Support
 
             if (item is Polygon)
                 return PolygonTemplate;
+
+            if (item is Types.Primary.Point)
+                return PointTemplate;
 
             return base.SelectTemplate(item, container);
         }
