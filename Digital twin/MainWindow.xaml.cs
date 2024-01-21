@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,6 +25,11 @@ namespace Digital_twin
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void Button_Click()
+        {
+
         }
     }
 }

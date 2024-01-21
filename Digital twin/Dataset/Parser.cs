@@ -1,9 +1,11 @@
-﻿using Digital_twin.Dataset.Types.Primary;
+﻿using Digital_twin.Dataset.Types.Canvas;
+using Digital_twin.Dataset.Types.Primary;
 using Digital_twin.Dataset.Types.Secondary;
 using Digital_twin.Dataset.Types.Tertiary;
 using Digital_twin.Draw_tools;
 using OsmSharp;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -37,10 +39,10 @@ namespace Digital_twin.Dataset
             }
             return Buildings;
         }
-        public static ObservableCollection<Room> getIndoorRoomLayout(ObservableCollection<Node> Nodes, 
+        public static ObservableCollection<ClosedWayObject> getIndoorRoomLayout(ObservableCollection<Node> Nodes, 
             ObservableCollection<Way> Ways, string level) 
         {
-            ObservableCollection<Room> IndoorLayout = new ObservableCollection<Room>();
+            ObservableCollection<ClosedWayObject> IndoorLayout = new ObservableCollection<ClosedWayObject>();
 
             foreach (Way way in Ways)
             {
@@ -53,32 +55,30 @@ namespace Digital_twin.Dataset
             return IndoorLayout;
         }
 
-        public static ObservableCollection<Segment> getIndoorWayLayout(ObservableCollection<Node> Nodes,
+        public static ObservableCollection<OpenedWayObject> getIndoorWayLayout(ObservableCollection<Node> Nodes,
             ObservableCollection<Way> Ways, string level)
         {
-            ObservableCollection<Segment> IndoorLayout = new ObservableCollection<Segment>();
+            ObservableCollection<OpenedWayObject> IndoorLayout = new ObservableCollection<OpenedWayObject>();
 
             foreach (Way way in Ways)
             {
-                if (way.Tags != null && way.Tags.Contains("indoor", "pathway"))
+                if (way.Tags != null && way.Tags.Contains("indoor", "pathway") && way.Tags.GetValue("level").Contains(level))
                 {
-                    ObservableCollection<Node> nodes = getNodes(Nodes, way.Nodes);
-                    //ObservableCollection<Segment> layout = new ObservableCollection<Segment>();
-                    DrawingTools.SplitToSegments(nodes, IndoorLayout, DataManager.maxLatitude, DataManager.minLongitude, true, null);
+                    IndoorLayout.Add(new Stairs(getNodes(Nodes, way.Nodes), way, true));
                 }
             }
             return IndoorLayout;
         }
 
-        public static ObservableCollection<Point> getDoorsLevel(ObservableCollection<Node> Nodes, string level)
+        public static ObservableCollection<NodeObject> getDoorsLevel(ObservableCollection<Node> Nodes, string level)
         {
-            ObservableCollection<Point> Doors = new ObservableCollection<Point>();
+            ObservableCollection<NodeObject> Doors = new ObservableCollection<NodeObject>();
 
             foreach (Node node in Nodes)
             {
                 if (node.Tags != null && node.Tags.ContainsKey("door") && node.Tags.Contains("level", level))
                 {
-                    Doors.Add(DrawingTools.CreatePointFromNode(node, DataManager.maxLatitude, DataManager.minLongitude));
+                    Doors.Add(new Door(node));
                 }
             }
             return Doors;

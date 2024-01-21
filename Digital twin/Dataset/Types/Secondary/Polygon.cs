@@ -1,5 +1,5 @@
 ﻿using Digital_twin.Dataset.Types.Primary;
-using Digital_twin.Dataset.Types.Tertiary;
+using Digital_twin.Dataset.Types.Canvas;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Media;
@@ -11,19 +11,18 @@ namespace Digital_twin.Dataset.Types.Secondary
         public List<Point> vertices { get; set; }
         public PointCollection Vertices { get; set; }
         public bool IsInner { get; set; }
-        private CanvasObject _canvasObject;
         private bool _isSelected;
 
-        public Polygon(CanvasObject refObject, bool isInner)
+        public Polygon(bool isInner)
         {
             vertices = new List<Point>();
             Vertices = new PointCollection();
-            _canvasObject = refObject;
             IsInner = isInner;
         }
+        
         public ObservableCollection<Tag> Tags
         {
-            get { return _canvasObject.Tags; }
+            get { return obj.Tags; }
             set { }
         }
 
@@ -42,5 +41,7 @@ namespace Digital_twin.Dataset.Types.Secondary
                 OnPropertyChanged("IsSelected");
             }
         }
+
+        public CanvasObject obj { get; set; }
     }
 }

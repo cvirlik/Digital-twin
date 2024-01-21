@@ -5,9 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:dataset="clr-namespace:Digital_twin.Dataset"
         xmlns:template="clr-namespace:Digital_twin.Dataset.Support"
+        xmlns:userControls="clr-namespace:Digital_twin.UserControls"
         xmlns:local="clr-namespace:Digital_twin"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Digital Twin" Height="750" Width="900">
 
     <Window.DataContext>
         <dataset:DataManager/>
@@ -15,114 +16,97 @@
 
     <Window.Resources>
         <template:PointToMarginConverter x:Key="PointToMarginConverter"/>
-        <Style TargetType="Line" x:Key="PlaneLine">
-            <Setter Property="Stroke" Value="Black"/>
+        <Style x:Key="HoverButton" TargetType="Button">
+            <Setter Property="Height" Value="20"/>
             <Style.Triggers>
-                <DataTrigger Binding="{Binding IsInner}" Value="True">
-                    <Setter Property="StrokeThickness" Value="2"/>
-                </DataTrigger>
-                <DataTrigger Binding="{Binding IsInner}" Value="False">
-                    <Setter Property="StrokeThickness" Value="3"/>
-                </DataTrigger>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True"/>
-                        <Condition Binding="{Binding IsInner}" Value="True"/>
-                    </MultiDataTrigger.Conditions>
-                    <Setter Property="Stroke" Value="#FFB85D31"/>
-                    <Setter Property="StrokeThickness" Value="6"/>
-                </MultiDataTrigger>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True"/>
-                        <Condition Binding="{Binding IsInner}" Value="False"/>
-                    </MultiDataTrigger.Conditions>
-                    <Setter Property="Stroke" Value="#FF3453B5"/>
-                    <Setter Property="StrokeThickness" Value="6"/>
-                </MultiDataTrigger>
+                <EventTrigger RoutedEvent="Button.MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Height" To="25" Duration="0:0:0.5"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Button.MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Height" To="20" Duration="0:0:0.5"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
             </Style.Triggers>
         </Style>
-
-        <Style TargetType="Polygon" x:Key="PolygomRoom">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding IsInner}" Value="True">
-                    <Setter Property="Fill" Value="DarkTurquoise"/>
-                </DataTrigger>
-                <DataTrigger Binding="{Binding IsInner}" Value="False">
-                    <Setter Property="Fill" Value="#FF7BBEBE"/>
-                </DataTrigger>
-                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True">
-                    <Setter Property="Fill" Value="DarkSeaGreen"/>
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-
-        <Style TargetType="Ellipse" x:Key="PointStyle">
-            <Setter Property="Fill" Value="Red"/>
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True">
-                    <Setter Property="Fill" Value="Blue"/>
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-
-        <DataTemplate x:Key="SegmentTemplate">
-            <Line Style="{StaticResource PlaneLine}" X1="{Binding Point1.X}" Y1="{Binding Point1.Y}" X2="{Binding Point2.X}" Y2="{Binding Point2.Y}"/>
-        </DataTemplate>
-        <DataTemplate x:Key="PolygonTemplate">
-            <Polygon Style="{StaticResource PolygomRoom}" Points="{Binding Vertices}"/>
-        </DataTemplate>
-        <DataTemplate x:Key="PointTemplate">
-            <Ellipse Style="{StaticResource PointStyle}" Width="5" Height="5">
-                <Ellipse.RenderTransform>
-                    <TranslateTransform X="{Binding X}" Y="{Binding Y}" />
-                </Ellipse.RenderTransform>
-            </Ellipse>
-        </DataTemplate>
     </Window.Resources>
 
     <Grid>
-        <ListBox Name="CanvasListBox"  Height="400" Width="500" Margin="33,17,267,17" Grid.Row="1" ItemsSource="{Binding SelectedLevel.shapes}" SelectedItem="{Binding SelectedShape}">
-            <ListBox.ItemTemplateSelector>
-                <template:ShapeTemplateSelector
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <userControls:Search Margin="10" FileName="{Binding Filepath, Mode=TwoWay}" Grid.Row="0"></userControls:Search>
+
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto" MinHeight="200"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto" MinWidth="258"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <ListBox x:Name="CanvasListBox" 
+                 ItemsSource="{Binding SelectedLevel.shapes}" SelectedItem="{Binding SelectedShape}"
+                     Width="500" Height="400" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <ListBox.Resources>
+                        <ResourceDictionary>
+                            <ResourceDictionary.MergedDictionaries>
+                                <ResourceDictionary Source="Styles/Styles.xaml"/>
+                            </ResourceDictionary.MergedDictionaries>
+                        </ResourceDictionary>
+                    </ListBox.Resources>
+                    <ListBox.ItemTemplateSelector>
+                        <template:ShapeTemplateSelector
                     SegmentTemplate="{StaticResource SegmentTemplate}"
                     PolygonTemplate="{StaticResource PolygonTemplate}" 
                     PointTemplate="{StaticResource PointTemplate}" />
-            </ListBox.ItemTemplateSelector>
-            <ListBox.ItemContainerStyle>
-                <Style TargetType="ListBoxItem">
-                    <Setter Property="IsSelected" Value="{Binding Content.IsSelected, Mode=TwoWay, RelativeSource={RelativeSource Self}}"/>
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="ListBoxItem">
-                                <ContentPresenter/>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </ListBox.ItemContainerStyle>
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <Canvas></Canvas>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-        </ListBox>
+                    </ListBox.ItemTemplateSelector>
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="IsSelected" Value="{Binding Content.IsSelected, Mode=TwoWay, RelativeSource={RelativeSource Self}}"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <ContentPresenter/>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas Background="Transparent"></Canvas>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ListBox>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Angle" VerticalAlignment="Center" Margin="10"/>
+                    <Slider x:Name="MySlider" Minimum="0" Maximum="360" Width="340" VerticalAlignment="Center"/>
+                    <TextBox Text="{Binding ElementName=MySlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Width="50" VerticalAlignment="Center" Margin="10"/>
+                </StackPanel>
+            </StackPanel>
 
-        <ListBox Height="150" Width="200" ItemsSource="{Binding Levels}" SelectedItem="{Binding SelectedLevel}" Margin="559,17,41,267">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding Name, StringFormat='Level {0}'}"/>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+            <ListBox  Grid.Row="0" Grid.Column="1" Name="LevelsListBox" ItemsSource="{Binding Levels}" SelectedItem="{Binding SelectedLevel}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name, StringFormat='Level {0}'}"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
 
-        <Grid Margin="559,201,41,52">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-
-            <ListView Name="TagListView" Grid.Column="0" ItemsSource="{Binding SelectedShape.Tags}">
+            <ListView Height="200" Grid.Row="1" Grid.Column="0" Name="TagListView" ItemsSource="{Binding SelectedShape.Tags}" 
+              SelectedItem="{Binding SelectedTag}" ScrollViewer.VerticalScrollBarVisibility="Auto">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="Key" DisplayMemberBinding="{Binding Key}" />
@@ -131,14 +115,15 @@
                 </ListView.View>
             </ListView>
 
-            <StackPanel Grid.Column="1" Orientation="Vertical" Margin="8,0,-8,0">
+            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical" Grid.RowSpan="2">
                 <Label Content="Key:"/>
                 <TextBox Name="KeyTextBox" Text="{Binding KeyText, UpdateSourceTrigger=PropertyChanged}"/>
                 <Label Content="Value:"/>
                 <TextBox Name="ValueTextBox" Text="{Binding ValueText, UpdateSourceTrigger=PropertyChanged}"/>
                 <Button Content="Add/Update Tag" Command="{Binding AddCommand}"/>
+                <Button Content="Delete Tag" Command="{Binding RemoveCommand}"/>
             </StackPanel>
         </Grid>
-
+        <Button Content="Save Work" Command="{Binding SaveCommand}" HorizontalAlignment="Left" Margin="10,664,0,0" Grid.Row="1" VerticalAlignment="Top" Width="118"/>
     </Grid>
 </Window>

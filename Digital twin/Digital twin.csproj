@@ -69,6 +69,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Dataset\Types\Canvas\ClosedWayObject.cs" />
+    <Compile Include="Dataset\Types\Canvas\NodeObject.cs" />
+    <Compile Include="Dataset\Types\Canvas\OpenedWayObject.cs" />
+    <Compile Include="Dataset\Types\Tertiary\Door.cs" />
+    <Compile Include="Dataset\Types\Tertiary\Stairs.cs" />
+    <Compile Include="File tools\MergeTools.cs" />
+    <Compile Include="UserControls\Search.xaml.cs">
+      <DependentUpon>Search.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -92,7 +101,7 @@
     <Compile Include="Dataset\Types\Tertiary\Room.cs" />
     <Compile Include="Dataset\Types\Secondary\Polygon.cs" />
     <Compile Include="Dataset\Types\Secondary\Segment.cs" />
-    <Compile Include="Dataset\Types\Tertiary\CanvasObject.cs" />
+    <Compile Include="Dataset\Types\Canvas\CanvasObject.cs" />
     <Compile Include="Draw tools\DrawingTools.cs" />
     <Compile Include="File tools\ReaderOSM.cs" />
     <Compile Include="File tools\WriterOSM.cs" />
@@ -100,6 +109,14 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Styles\Styles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\Search.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

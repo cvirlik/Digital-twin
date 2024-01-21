@@ -9,11 +9,8 @@ using OsmSharp;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Reflection.Emit;
+using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Shapes;
-using System.Xml.Linq;
 
 namespace Digital_twin.Dataset
 {
@@ -25,6 +22,13 @@ namespace Digital_twin.Dataset
         public static double minLongitude;
         public static Tuple<int, int> central_offset;
         private RelayCommand _addCommand;
+        private RelayCommand _removeCommand;
+        private RelayCommand _saveCommand;
+
+        private string _keyText;
+        private string _valueText;
+
+        private string filename;
 
         public ObservableCollection<Node> Nodes { get; set; } = new ObservableCollection<Node>();
         public ObservableCollection<Way> Ways { get; set; } = new ObservableCollection<Way>();
@@ -32,10 +36,17 @@ namespace Digital_twin.Dataset
         public ObservableCollection<Building> Buildings { get; set; } = new ObservableCollection<Building>();
         public ObservableCollection<Level> Levels { get; set; } = new ObservableCollection<Level>();
         public Canvas canvas { get; set; }
+        private bool readed = false;
 
-        public DataManager() {
-            ReaderOSM.ReadOSM(@"OSM files\map.osm", Nodes, Ways, Relations);
+        private void ReadOSMFile(string filename)
+        {
+            Levels.Clear();
+            Nodes.Clear();
+            Ways.Clear();
+            Relations.Clear();
+            ReaderOSM.ReadOSM(filename, Nodes, Ways, Relations);
             var result = Parser.getBuildings(Ways);
+            readed = true;
             // TEMP SOLUTION
             // TODO: Fix it
             ObservableCollection<Node> builldingNodes = new ObservableCollection<Node>();
@@ -46,13 +57,12 @@ namespace Digital_twin.Dataset
                 {
                     builldingNodes.Add(item);
                 }
-                
-            }  
+
+            }
             maxLatitude = builldingNodes.Max(node => (double)node.Latitude);
             minLongitude = builldingNodes.Min(node => (double)node.Longitude);
-            central_offset = DrawingTools.CenterOffset(builldingNodes, maxLatitude, minLongitude);
+            central_offset = DrawingTools.CenterOffset(builldingNodes);
 
-            // building fix
             foreach (var building in result)
             {
                 Buildings.Add(new Building(Parser.getNodes(Nodes, building.Nodes), building, false));
@@ -77,20 +87,46 @@ namespace Digital_twin.Dataset
 
                 foreach (var way in Parser.getIndoorWayLayout(Nodes, Ways, i.ToString()))
                 {
-                    Console.WriteLine("Add way");
                     level.AddObjects(way);
                 }
 
                 foreach (var point in Parser.getDoorsLevel(Nodes, i.ToString()))
                 {
-                    point.X -= 2.5;
-                    point.Y -= 2.5;
                     level.AddObjects(point);
                 }
 
                 Levels.Add(level);
-            } 
-            _selectedLevel = Levels.First();
+            }
+            SelectedLevel = Levels.First();
+
+        }
+        private bool ValidateFileType(string path)
+        {
+            string extension = System.IO.Path.GetExtension(path);
+
+            if (extension == null || extension.ToLower() != ".osm")
+            {
+                MessageBox.Show("The selected file is not an OSM file.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+        public DataManager() {}
+
+        public string Filepath
+        { 
+            get { return filename; }
+            set {
+                if (ValidateFileType(value))
+                {
+                    filename = System.IO.Path.GetFileName(value);
+                    OnPropertyChanged(nameof(Filepath));
+                    ReadOSMFile(value);
+                }
+            }
         }
 
         public Level SelectedLevel
@@ -102,7 +138,6 @@ namespace Digital_twin.Dataset
                 OnPropertyChanged(nameof(SelectedLevel));
             }
         }
-
         public IShape SelectedShape
         {
             get {
@@ -110,29 +145,42 @@ namespace Digital_twin.Dataset
             set
             {
                 _selectedShape = value;
-                OnPropertyChanged("SelectedShape");
+                OnPropertyChanged(nameof(SelectedShape));
             }
         }
 
-        private string _keyText;
+        private Tag _selectedTag;
+        public Tag SelectedTag
+        {
+            get { return _selectedTag; }
+            set
+            {
+                _selectedTag = value;
+                if (value != null)
+                {
+                    KeyText = _selectedTag.Key;
+                    ValueText = _selectedTag.Value;
+                }
+                OnPropertyChanged(nameof(SelectedTag));
+            }
+        }
+        
         public string KeyText
         {
             get { return _keyText; }
             set
             {
                 _keyText = value;
-                OnPropertyChanged("KeyText");
+                OnPropertyChanged(nameof(KeyText));
             }
         }
-
-        private string _valueText;
         public string ValueText
         {
             get { return _valueText; }
             set
             {
                 _valueText = value;
-                OnPropertyChanged("ValueText");
+                OnPropertyChanged(nameof(ValueText));
             }
         }
 
@@ -140,29 +188,54 @@ namespace Digital_twin.Dataset
         {
             get { return _addCommand ?? (_addCommand = new RelayCommand(AddTag, AddTagCanExecute)); }
         }
-
         private void AddTag(object obj)
         {
             var key = KeyText;
             var value = ValueText;
 
-            var existingTag = SelectedShape.Tags.FirstOrDefault(t => t.Key == key);
+            var existingTag = SelectedShape.obj.Tags.FirstOrDefault(t => t.Key == key);
             if (existingTag != null)
             {
                 existingTag.Value = value;
             }
             else
             {
-                SelectedShape.Tags.Add(new Tag { Key = key, Value = value });
+                SelectedShape.obj.Tags.Add(new Tag { Key = key, Value = value });
             }
 
             KeyText = string.Empty;
             ValueText = string.Empty;
         }
-
         private bool AddTagCanExecute(object obj)
         {
             return !string.IsNullOrWhiteSpace(KeyText) && !string.IsNullOrWhiteSpace(ValueText);
+        }
+
+        public RelayCommand RemoveCommand
+        {
+            get { return _removeCommand ?? (_removeCommand = new RelayCommand(DeleteTag, DeleteTagCanExecute)); }
+        }
+        private void DeleteTag(object obj)
+        {
+            SelectedShape.obj.Tags.Remove(_selectedTag);
+        }
+        private bool DeleteTagCanExecute(object obj)
+        {
+            return _selectedTag != null;
+        }
+
+        public RelayCommand SaveCommand
+        {
+            get { return _saveCommand ?? (_saveCommand = new RelayCommand(Save, SaveCanExecute)); }
+        }
+        private void Save(object obj)
+        {
+            WriterOSM.WriteOSM("new.osm", MergeTools.mergeNodes(Levels, Nodes), MergeTools.mergeWays(Levels, Ways), Relations);
+            MessageBox.Show("Your work was saved!", "Save", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+        private bool SaveCanExecute(object obj)
+        {
+            return readed;
         }
     }
 }

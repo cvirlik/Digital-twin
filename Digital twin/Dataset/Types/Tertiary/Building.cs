@@ -1,11 +1,11 @@
 ﻿using System.Collections.ObjectModel;
 using OsmSharp;
 using Digital_twin.Draw_tools;
-using Digital_twin.Dataset.Types.Secondary;
+using Digital_twin.Dataset.Types.Canvas;
 
 namespace Digital_twin.Dataset.Types.Tertiary
 {
-    public class Building : CanvasObject
+    public class Building : ClosedWayObject
     {
         public Building(ObservableCollection<Node> _nodes, Way _way, bool isInner) : base(_nodes, _way, isInner){}
 

@@ -1,5 +1,6 @@
 ﻿using Digital_twin.Dataset.Types.Primary;
-using Digital_twin.Dataset.Types.Tertiary;
+using Digital_twin.Dataset.Types.Canvas;
+using OsmSharp;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,7 +15,6 @@ namespace Digital_twin.Dataset.Types.Secondary
         public Point Point1 { get; set; }
         public Point Point2 { get; set; }
         public bool IsInner { get; set; }
-        private CanvasObject _canvasObject;
         private bool _isSelected;
 
         public bool IsSelected
@@ -26,21 +26,20 @@ namespace Digital_twin.Dataset.Types.Secondary
                 OnPropertyChanged("IsSelected");
             }
         }
+
         public ObservableCollection<Tag> Tags
         {
-            get { return _canvasObject.Tags; }
+            get { return obj.Tags; }
             set { }
         }
+        public CanvasObject obj { get; set; }
 
-        public Segment(double x1, double y1, 
-                       double lat1, double lon1,
-                       double x2, double y2,
-                       double lat2, double lon2, bool isInner, CanvasObject refObject)
+        public Segment(double x1, double y1, Node node1,
+                       double x2, double y2, Node node2, bool isInner)
         {
-            Point1 = new Point(x1, y1, lat1, lon1);
-            Point2 = new Point(x2, y2, lat2, lon2);
+            Point1 = new Point(x1, y1, node1);
+            Point2 = new Point(x2, y2, node2);
             IsInner = isInner;
-            _canvasObject = refObject;
         }
     }
 }

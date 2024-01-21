@@ -2,30 +2,30 @@
 using OsmSharp;
 using System.Collections.Generic;
 using System.IO;
+using System.Collections.ObjectModel;
 
 namespace Digital_twin.File_tools
 {
-    public class WriterOSM
+    public static class WriterOSM
     {
-        public static void WriteOSM(string filepath, List<OsmGeo> geodata) {
+        public static void WriteOSM(string filepath, ObservableCollection<Node> nodes, 
+            ObservableCollection<Way> ways, 
+            ObservableCollection<Relation> relations) {
             using (var fileStream = new FileInfo(filepath).Open(FileMode.Create))
             {
                 var target = new XmlOsmStreamTarget(fileStream);
                 target.Initialize();
-                foreach (var osmElement in geodata)
+                foreach (Node node in nodes)
                 {
-                    switch (osmElement)
-                    {
-                        case Node n:
-                            target.AddNode(n);
-                            break;
-                        case Way w:
-                            target.AddWay(w);
-                            break;
-                        case Relation r:
-                            target.AddRelation(r);
-                            break;
-                    }
+                    target.AddNode(node);
+                }
+                foreach (Way w in ways)
+                {
+                    target.AddWay(w);
+                }
+                foreach (Relation r in relations)
+                {
+                    target.AddRelation(r);
                 }
                 target.Flush();
                 target.Close();

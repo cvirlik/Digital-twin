@@ -1,4 +1,6 @@
-﻿using Digital_twin.Dataset.Types.Secondary;
+﻿using Digital_twin.Dataset.Types.Canvas;
+using Digital_twin.Dataset.Types.Secondary;
+using OsmSharp;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,10 +14,10 @@ namespace Digital_twin.Dataset.Types.Primary
     {
         public double X { get; set; }
         public double Y { get; set; }
-
         public double Latitude { get; set; }
         public double Longitude { get; set; }
-        public ObservableCollection<Tag> Tags { get; set; }
+        public Node node { get; set; }
+
         private bool _isSelected;
 
         public bool IsSelected
@@ -28,12 +30,21 @@ namespace Digital_twin.Dataset.Types.Primary
             }
         }
 
-        public Point(double x, double y, double latitude, double longitude)
+        public CanvasObject obj { get; set; }
+        public ObservableCollection<Tag> Tags
+        {
+            get { return obj.Tags; }
+            set { }
+        }
+            
+
+        public Point(double x, double y, Node _node)
         {
             X = x;
             Y = y;
-            Latitude = latitude;
-            Longitude = longitude;
+            node = _node;
+            Latitude = (double)node.Latitude;
+            Longitude = (double)node.Longitude;
         }
     }
 }

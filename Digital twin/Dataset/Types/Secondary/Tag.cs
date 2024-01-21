@@ -6,9 +6,25 @@ using System.Threading.Tasks;
 
 namespace Digital_twin.Dataset.Types.Secondary
 {
-    public class Tag
+    public class Tag : ViewModelBase
     {
-        public string Key { get; set; }
-        public string Value { get; set; }
+        private string _key;
+        private string _value;
+        public string Key { 
+            get { return _key; } 
+            set
+            {
+                _key = value;
+                OnPropertyChanged(nameof(Key));
+            }
+        }
+        public string Value {
+            get { return _value; }
+            set
+            {
+                _value = value;
+                OnPropertyChanged(nameof(Value));
+            }
+        }
     }
 }

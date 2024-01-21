@@ -1,5 +1,5 @@
 ﻿using Digital_twin.Dataset.Types.Primary;
-using Digital_twin.Dataset.Types.Tertiary;
+using Digital_twin.Dataset.Types.Canvas;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -30,17 +30,13 @@ namespace Digital_twin.Dataset.Types
 
         public void AddObjects(CanvasObject obj)
         {
+            Console.WriteLine(obj.ToString());
             canvasObjects.Add(obj);
             foreach (IShape shape in obj.Shapes)
             {
                 shapes.Add(shape);
             }
         }
-        public void AddObjects(IShape obj)
-        {
-            shapes.Add(obj);
-        }
-
         public int LevelNum { get { return level; } }  
         public string Name { get { return level.ToString(); } }  
     }
