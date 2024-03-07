@@ -8,7 +8,7 @@
              d:DesignHeight="50" d:DesignWidth="70" x:Name="root">
     <Grid>
         <Button HorizontalAlignment="Left" VerticalAlignment="Center" Height="50" Width="70" Click="Enable">
-            <Image Source="C:\Users\hliav\Desktop\eye.png" />
+            <Image Source="../Icons/eye.png" />
         </Button>
     </Grid>
 </UserControl>

@@ -17,7 +17,7 @@
                     </Style.Triggers>
                 </Style>
             </Button.Style>
-            <Image Source="C:\Users\hliav\Desktop\point.png"/>
+            <Image Source="../Icons/point.png"/>
         </Button>
     </Grid>
 </UserControl>

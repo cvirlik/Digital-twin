@@ -17,7 +17,7 @@
                     </Style.Triggers>
                 </Style>
             </Button.Style>
-            <Image Source="C:\Users\hliav\Desktop\line.png"/>
+            <Image Source="../Icons/line.png"/>
         </Button>
     </Grid>
 </UserControl>
