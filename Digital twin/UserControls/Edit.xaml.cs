@@ -1,5 +1,6 @@
-﻿using System;
-using System.Collections;
+﻿using Digital_twin.Dataset;
+using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,18 +14,23 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Digital_twin.Dataset;
 
-namespace Digital_twin
+namespace Digital_twin.UserControls
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for Edit.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class Edit : UserControl
     {
-        public MainWindow()
+        DataManager dataManager;
+        public Edit()
         {
             InitializeComponent();
+        }
+        private void SetEdit(object sender, RoutedEventArgs e)
+        {
+            if (dataManager == null) dataManager = this.DataContext as DataManager;
+            dataManager.State = "Edit";
         }
     }
 }

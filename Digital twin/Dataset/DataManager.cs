@@ -1,20 +1,30 @@
 ﻿using Digital_twin.Dataset.Support;
 using Digital_twin.Dataset.Types;
+using Digital_twin.Dataset.Types.Canvas;
 using Digital_twin.Dataset.Types.Primary;
 using Digital_twin.Dataset.Types.Secondary;
 using Digital_twin.Dataset.Types.Tertiary;
 using Digital_twin.Draw_tools;
 using Digital_twin.File_tools;
+using Digital_twin.UserControls;
+using GeographicLib;
 using OsmSharp;
+using OsmSharp.Tags;
+//using OsmSharp.Tags;
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Shapes;
+//using GeographicLib;
 
 namespace Digital_twin.Dataset
 {
-    internal class DataManager : ViewModelBase
+    public class DataManager : ViewModelBase
     {
         private Level _selectedLevel;
         private IShape _selectedShape;
@@ -24,6 +34,52 @@ namespace Digital_twin.Dataset
         private RelayCommand _addCommand;
         private RelayCommand _removeCommand;
         private RelayCommand _saveCommand;
+
+        private string state = "Edit";
+        public string State
+        {
+            get { return state; }
+            set
+            {
+                state = value;
+                OnPropertyChanged("State");
+            }
+        }
+
+        private ImageSource image;
+
+        private string currentImage;
+
+        private double _imageOpacity = 1.0;
+        public double ImageOpacity
+        {
+            get { return _imageOpacity; }
+            set
+            {
+                _imageOpacity = value;
+                OnPropertyChanged("ImageOpacity");
+            }
+        }
+
+        public string CurrentImage
+        {
+            get { return currentImage; }
+            set
+            {
+                currentImage = value;
+                Image = ImageLoader.LoadImage(currentImage);
+                OnPropertyChanged(nameof(CurrentImage));
+            }
+        }
+
+        public ImageSource Image
+        {
+            get { return image; }
+            set { 
+                image = value;
+                OnPropertyChanged(nameof(Image));
+            }
+        }
 
         private string _keyText;
         private string _valueText;
@@ -35,7 +91,7 @@ namespace Digital_twin.Dataset
         public ObservableCollection<Relation> Relations { get; set; } = new ObservableCollection<Relation>();
         public ObservableCollection<Building> Buildings { get; set; } = new ObservableCollection<Building>();
         public ObservableCollection<Level> Levels { get; set; } = new ObservableCollection<Level>();
-        public Canvas canvas { get; set; }
+
         private bool readed = false;
 
         private void ReadOSMFile(string filename)
@@ -61,6 +117,7 @@ namespace Digital_twin.Dataset
             }
             maxLatitude = builldingNodes.Max(node => (double)node.Latitude);
             minLongitude = builldingNodes.Min(node => (double)node.Longitude);
+
             central_offset = DrawingTools.CenterOffset(builldingNodes);
 
             foreach (var building in result)
@@ -114,8 +171,19 @@ namespace Digital_twin.Dataset
                 return true;
             }
         }
-        public DataManager() {}
+        public ICommand ChangeOpacityCommand { get; set; }
 
+        public DataManager()
+        {
+            ChangeOpacityCommand = new RelayCommand(ChangeOpacity);
+        }
+
+        private void ChangeOpacity(object obj)
+        {
+            ImageOpacity = (ImageOpacity == 0.0) ? 1.0 : 0.0;
+        }
+
+        
         public string Filepath
         { 
             get { return filename; }
@@ -149,8 +217,8 @@ namespace Digital_twin.Dataset
             }
         }
 
-        private Tag _selectedTag;
-        public Tag SelectedTag
+        private Types.Secondary.Tag _selectedTag;
+        public Types.Secondary.Tag SelectedTag
         {
             get { return _selectedTag; }
             set
@@ -200,7 +268,7 @@ namespace Digital_twin.Dataset
             }
             else
             {
-                SelectedShape.obj.Tags.Add(new Tag { Key = key, Value = value });
+                SelectedShape.obj.Tags.Add(new Types.Secondary.Tag { Key = key, Value = value });
             }
 
             KeyText = string.Empty;
@@ -236,6 +304,44 @@ namespace Digital_twin.Dataset
         private bool SaveCanExecute(object obj)
         {
             return readed;
+        }
+
+        public void AddNode(double X, double Y)
+        {
+            Node n = new Node();
+            n.Latitude = -1; n.Longitude = -1;
+            n.Tags = new TagsCollection();
+            Types.Primary.Point point = new Types.Primary.Point(X, Y, n);
+            point.obj = new NodeObject(n);
+            SelectedLevel.Shapes.Add(point);
+        }
+        public void AddWay(double X, double Y, double previousX, double previousY, bool removedStart)
+        {
+            Node n = new Node();
+            n.Latitude = -1; n.Longitude = -1;
+            n.Tags = new TagsCollection();
+
+            if (previousX == -1 && previousY == -1)
+            {
+                Console.WriteLine("Place first point");
+                Types.Primary.Point point = new Types.Primary.Point(X, Y, n);
+                point.obj = new NodeObject(n);
+                SelectedLevel.Shapes.Add(point);
+            }
+            else
+            {
+                if (!removedStart)
+                {
+                    Console.WriteLine("Remove Start Point");
+                    SelectedLevel.Shapes.RemoveAt(SelectedLevel.Shapes.Count - 1);
+                }
+                Node np = new Node();
+                np.Latitude = -1; np.Longitude = -1;
+                np.Tags = new TagsCollection();
+                Segment segment = new Segment(previousX, previousY, np, X, Y, n, true);
+                segment.obj = new NodeObject(n); //TODO: Fix objects.
+                SelectedLevel.Shapes.Add(segment);
+            }
         }
     }
 }

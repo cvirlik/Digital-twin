@@ -38,7 +38,7 @@ namespace Digital_twin.File_tools
                     }
                 }
             }
-            Console.WriteLine(updatedNodes.Count());
+
             foreach (var updatedNode in updatedNodes)
             {
                 var originalNode = nodes.FirstOrDefault(n => n.Id == updatedNode.Id);
@@ -67,8 +67,10 @@ namespace Digital_twin.File_tools
                         var osmSharpTags = new TagsCollection();
                         foreach (Sec.Tag tag in upd.Tags)
                         {
+                            Console.WriteLine(tag.Key + " : " + tag.Value);
                             osmSharpTags.Add(tag.Key, tag.Value);
                         }
+                        way.Tags = osmSharpTags;   
                         updatedWays.Add(way);
                     }
                     else if (obj is OpenedWayObject)
@@ -80,11 +82,13 @@ namespace Digital_twin.File_tools
                         {
                             osmSharpTags.Add(tag.Key, tag.Value);
                         }
+                        way.Tags = osmSharpTags;
                         updatedWays.Add(way);
                     }
                 }
             }
-            Console.WriteLine(updatedWays.Count());
+
+
             foreach (var updatedWay in updatedWays)
             {
                 var originalWay = ways.FirstOrDefault(w => w.Id == updatedWay.Id);
@@ -94,7 +98,6 @@ namespace Digital_twin.File_tools
                 }
                 ways.Add(updatedWay);
             }
-
             return ways;
         }
     }

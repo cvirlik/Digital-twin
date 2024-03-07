@@ -6,36 +6,16 @@
         xmlns:dataset="clr-namespace:Digital_twin.Dataset"
         xmlns:template="clr-namespace:Digital_twin.Dataset.Support"
         xmlns:userControls="clr-namespace:Digital_twin.UserControls"
-        xmlns:local="clr-namespace:Digital_twin"
         mc:Ignorable="d"
         Title="Digital Twin" Height="750" Width="900">
 
-    <Window.DataContext>
-        <dataset:DataManager/>
-    </Window.DataContext>
-
     <Window.Resources>
+        <dataset:DataManager x:Key="Manager"/>
         <template:PointToMarginConverter x:Key="PointToMarginConverter"/>
-        <Style x:Key="HoverButton" TargetType="Button">
-            <Setter Property="Height" Value="20"/>
-            <Style.Triggers>
-                <EventTrigger RoutedEvent="Button.MouseEnter">
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimation Storyboard.TargetProperty="Height" To="25" Duration="0:0:0.5"/>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-                <EventTrigger RoutedEvent="Button.MouseLeave">
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimation Storyboard.TargetProperty="Height" To="20" Duration="0:0:0.5"/>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-            </Style.Triggers>
-        </Style>
     </Window.Resources>
+    <Window.DataContext>
+        <StaticResource ResourceKey="Manager"/>
+    </Window.DataContext>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -56,45 +36,24 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <ListBox x:Name="CanvasListBox" 
-                 ItemsSource="{Binding SelectedLevel.shapes}" SelectedItem="{Binding SelectedShape}"
-                     Width="500" Height="400" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <ListBox.Resources>
-                        <ResourceDictionary>
-                            <ResourceDictionary.MergedDictionaries>
-                                <ResourceDictionary Source="Styles/Styles.xaml"/>
-                            </ResourceDictionary.MergedDictionaries>
-                        </ResourceDictionary>
-                    </ListBox.Resources>
-                    <ListBox.ItemTemplateSelector>
-                        <template:ShapeTemplateSelector
-                    SegmentTemplate="{StaticResource SegmentTemplate}"
-                    PolygonTemplate="{StaticResource PolygonTemplate}" 
-                    PointTemplate="{StaticResource PointTemplate}" />
-                    </ListBox.ItemTemplateSelector>
-                    <ListBox.ItemContainerStyle>
-                        <Style TargetType="ListBoxItem">
-                            <Setter Property="IsSelected" Value="{Binding Content.IsSelected, Mode=TwoWay, RelativeSource={RelativeSource Self}}"/>
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="ListBoxItem">
-                                        <ContentPresenter/>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </ListBox.ItemContainerStyle>
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <Canvas Background="Transparent"></Canvas>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                </ListBox>
-                <StackPanel Orientation="Horizontal">
-                    <Label Content="Angle" VerticalAlignment="Center" Margin="10"/>
-                    <Slider x:Name="MySlider" Minimum="0" Maximum="360" Width="340" VerticalAlignment="Center"/>
-                    <TextBox Text="{Binding ElementName=MySlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Width="50" VerticalAlignment="Center" Margin="10"/>
-                </StackPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <userControls:BrowseImage  FileName="{Binding CurrentImage, Mode=TwoWay}"/>
+                        <userControls:ImageControl EnableCommand="{Binding ChangeOpacityCommand}"/>
+                        <userControls:Edit DataContext="{StaticResource Manager}"/>
+                        <userControls:DrawPoint DataContext="{StaticResource Manager}"/>
+                        <userControls:DrawLine DataContext="{StaticResource Manager}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1">
+                        <userControls:BuildingView DataContext="{StaticResource Manager}"/>
+                    </StackPanel>
+                </Grid>
             </StackPanel>
 
             <ListBox  Grid.Row="0" Grid.Column="1" Name="LevelsListBox" ItemsSource="{Binding Levels}" SelectedItem="{Binding SelectedLevel}">
@@ -105,15 +64,20 @@
                 </ListBox.ItemTemplate>
             </ListBox>
 
-            <ListView Height="200" Grid.Row="1" Grid.Column="0" Name="TagListView" ItemsSource="{Binding SelectedShape.Tags}" 
-              SelectedItem="{Binding SelectedTag}" ScrollViewer.VerticalScrollBarVisibility="Auto">
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn Header="Key" DisplayMemberBinding="{Binding Key}" />
-                        <GridViewColumn Header="Value" DisplayMemberBinding="{Binding Value}" />
-                    </GridView>
-                </ListView.View>
-            </ListView>
+            <StackPanel Grid.Row="1" Grid.Column="0">
+                <ListView Height="200"  Name="TagListView" ItemsSource="{Binding SelectedShape.Tags}" 
+                  SelectedItem="{Binding SelectedTag}" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Key" DisplayMemberBinding="{Binding Key}" />
+                            <GridViewColumn Header="Value" DisplayMemberBinding="{Binding Value}" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+                <Button Content="Save Work" Command="{Binding SaveCommand}" HorizontalAlignment="Left"  
+                        VerticalAlignment="Top" Width="118"/>
+            </StackPanel>
+
 
             <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical" Grid.RowSpan="2">
                 <Label Content="Key:"/>
@@ -124,6 +88,6 @@
                 <Button Content="Delete Tag" Command="{Binding RemoveCommand}"/>
             </StackPanel>
         </Grid>
-        <Button Content="Save Work" Command="{Binding SaveCommand}" HorizontalAlignment="Left" Margin="10,664,0,0" Grid.Row="1" VerticalAlignment="Top" Width="118"/>
+        
     </Grid>
 </Window>

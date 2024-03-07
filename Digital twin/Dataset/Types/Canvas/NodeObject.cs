@@ -6,7 +6,7 @@ using Digital_twin.Dataset.Types.Secondary;
 
 namespace Digital_twin.Dataset.Types.Canvas
 {
-    public abstract class NodeObject : CanvasObject
+    public class NodeObject : CanvasObject
     {
         public Node node { get; set; }
         public NodeObject(Node _node)

@@ -86,5 +86,54 @@ namespace Digital_twin.Dataset.Support
         {
             return Math.PI * angle / 180.0;
         }
+
+        public static (double Latitude, double Longitude) CartesianToGeographic(double x, double y, double z)
+        {
+            double r = Math.Sqrt(x * x + y * y + z * z); // Distance from origin to point (x, y, z)
+
+            double latitude = Math.Asin(z / r) * (180 / Math.PI); // Convert radians to degrees
+            double longitude = Math.Atan2(y, x) * (180 / Math.PI); // Convert radians to degrees
+
+            return (latitude, longitude);
+        }
+
+        private const double originShift = 2 * Math.PI * 6378137 / 2.0;
+        private const double initialResolution = 2 * Math.PI * 6378137 / 256;
+        public static (double, double) LatLonToMeters(double lat, double lon)
+        {
+            double mx = lon * originShift / 180.0;
+            double my = Math.Log(Math.Tan((90 + lat) * Math.PI / 360.0)) / (Math.PI / 180.0);
+            my = my * originShift / 180.0;
+            return (mx, my);
+        }
+
+        public static (double, double) MetersToLatLon(double mx, double my)
+        {
+            double lon = (mx / originShift) * 180.0;
+            double lat = (my / originShift) * 180.0;
+            lat = 180 / Math.PI * (2 * Math.Atan(Math.Exp(lat * Math.PI / 180.0)) - Math.PI / 2.0);
+            return (lat, lon);
+        }
+
+        private const double earthCircumferenceMeters = 2 * Math.PI * 6378137;
+        // TODO: adaptive
+        private static double canvasWidth = 500;
+        private static double canvasHeight = 400;
+
+        public static (double, double) MetersToCanvas(double mx, double my, double minX,
+            double maxX, double minY, double maxY)
+        {
+            double x = ((mx - minX) / (maxX - minX)) * canvasWidth;
+            double y = ((my - minY) / (maxY - minY)) * canvasHeight;
+            return (x, y);
+        }
+
+        public static (double, double) CanvasToMeters(double x, double y, double minX,
+            double maxX, double minY, double maxY)
+        {
+            double mx = x / canvasWidth * (maxX - minX) + minX;
+            double my = y / canvasHeight * (maxY - minY) + minY;
+            return (mx, my);
+        }
     }
 }

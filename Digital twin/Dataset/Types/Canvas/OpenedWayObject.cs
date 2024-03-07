@@ -7,7 +7,7 @@ using OsmSharp;
 namespace Digital_twin.Dataset.Types.Canvas
 {
     // Class for pathways
-    public abstract class OpenedWayObject : CanvasObject
+    public class OpenedWayObject : CanvasObject
     {
         // OSM DATA
         protected ObservableCollection<Node> nodes { get; set; }

@@ -30,7 +30,6 @@ namespace Digital_twin.Dataset.Types
 
         public void AddObjects(CanvasObject obj)
         {
-            Console.WriteLine(obj.ToString());
             canvasObjects.Add(obj);
             foreach (IShape shape in obj.Shapes)
             {

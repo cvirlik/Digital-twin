@@ -83,5 +83,9 @@ namespace Digital_twin.Dataset
             }
             return Doors;
         }
+        public static NodeObject createNodeObject(Node node)
+        {
+            return new NodeObject(node);
+        }
     }
 }

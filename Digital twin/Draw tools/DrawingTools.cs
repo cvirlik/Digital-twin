@@ -46,29 +46,36 @@ namespace Digital_twin.Draw_tools
             foreach (var node in nodes)
             {
                 double x, y, h;
-                GpsUtils.GeodeticToEnu((double)(node as Node).Latitude, (double)(node as Node).Longitude, 0, 
+                GpsUtils.GeodeticToEnu((double)(node as Node).Latitude, (double)(node as Node).Longitude, 0,
                     DataManager.maxLatitude, DataManager.minLongitude, 0,
                     out x, out y, out h);
                 //TODO: Zoom scale.
-                x = (x*3 + DataManager.central_offset.Item1);
+                x = (x * 3 + DataManager.central_offset.Item1);
                 y = (1 - y) * 3 + DataManager.central_offset.Item2;
+                /*(x, y) = GpsUtils.LatLonToMeters((double)(node as Node).Latitude, (double)(node as Node).Longitude);
+                double cx, cy;
+                (cx, cy) = GpsUtils.MetersToCanvas(x, y);*/
                 if (previousX != -1 && previousY != -1)
                 {
                     segments.Add(new Segment(previousX, previousY, previousNode, x, y, node, isInner));
                 }
                 previousX = x; previousY = y; previousNode = node;
+                //Console.WriteLine(cx + " " + cy);
             }
         }
 
         public static Point CreatePointFromNode(Node node)
         {
             double x, y, h;
-            GpsUtils.GeodeticToEnu((double)(node as Node).Latitude, (double)(node as Node).Longitude, 0, 
+            GpsUtils.GeodeticToEnu((double)(node as Node).Latitude, (double)(node as Node).Longitude, 0,
                 DataManager.maxLatitude, DataManager.minLongitude, 0,
                 out x, out y, out h);
             //TODO: Zoom scale.
-            x = (x*3 + DataManager.central_offset.Item1);
+            x = (x * 3 + DataManager.central_offset.Item1);
             y = (1 - y) * 3 + DataManager.central_offset.Item2;
+            /*(x, y) = GpsUtils.LatLonToMeters((double)(node as Node).Latitude, (double)(node as Node).Longitude);
+            double cx, cy;
+            (cx, cy) = GpsUtils.MetersToCanvas(x, y);*/
 
             return new Point(x, y, node);
         }
