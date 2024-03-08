@@ -8,7 +8,21 @@
              d:DesignHeight="50" d:DesignWidth="70" x:Name="root">
     <Grid>
         <Button HorizontalAlignment="Left" VerticalAlignment="Center" Height="50" Width="70" Click="Enable">
-            <Image Source="../Icons/eye.png" />
+            <Image>
+                <Image.Style>
+                    <Style TargetType="Image">
+                        <Setter Property="Source" Value="../Icons/eye.png" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ImageOpacity}" Value="0.0">
+                                <Setter Property="Source" Value="../Icons/eye_closed.png"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ImageOpacity}" Value="1.0">
+                                <Setter Property="Source" Value="../Icons/eye.png"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Image.Style>
+            </Image>
         </Button>
     </Grid>
 </UserControl>

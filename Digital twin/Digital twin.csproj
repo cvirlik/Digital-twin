@@ -234,7 +234,9 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Icons\eye_closed.png" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\Edit.png" />
     <Resource Include="Icons\eye.png" />
