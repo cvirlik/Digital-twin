@@ -90,6 +90,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Dataset\Support\VisibilityToIsHitTestVisibleConverter.cs" />
     <Compile Include="Dataset\Types\Canvas\ClosedWayObject.cs" />
     <Compile Include="Dataset\Types\Canvas\NodeObject.cs" />
     <Compile Include="Dataset\Types\Canvas\OpenedWayObject.cs" />
@@ -112,8 +113,17 @@
     <Compile Include="UserControls\Edit.xaml.cs">
       <DependentUpon>Edit.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\EditCanvas.xaml.cs">
+      <DependentUpon>EditCanvas.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\ImageControl.xaml.cs">
       <DependentUpon>ImageControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\LineCanvas.xaml.cs">
+      <DependentUpon>LineCanvas.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\PointCanvas.xaml.cs">
+      <DependentUpon>PointCanvas.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\Search.xaml.cs">
       <DependentUpon>Search.xaml</DependentUpon>
@@ -173,7 +183,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UserControls\EditCanvas.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserControls\ImageControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\LineCanvas.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\PointCanvas.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

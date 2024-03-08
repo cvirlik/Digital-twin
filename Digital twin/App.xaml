@@ -1,9 +1,9 @@
 ﻿<Application x:Class="Digital_twin.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Digital_twin"
+             xmlns:local="clr-namespace:Digital_twin.Dataset"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <local:DataManager x:Key="Manager" />
     </Application.Resources>
 </Application>

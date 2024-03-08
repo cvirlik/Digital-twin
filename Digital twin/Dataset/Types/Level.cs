@@ -12,6 +12,7 @@ namespace Digital_twin.Dataset.Types
     {
         public ObservableCollection<CanvasObject> canvasObjects { get; set; } = new ObservableCollection<CanvasObject>();
         public ObservableCollection<IShape> shapes { get; set; } = new ObservableCollection<IShape>();
+        public ObservableCollection<IShape> addedElements { get; set; } = new ObservableCollection<IShape>();
 
         private int level;
         private int lastCount = -1;
@@ -25,6 +26,14 @@ namespace Digital_twin.Dataset.Types
             get
             {
                 return shapes;
+            }
+        }
+
+        public ObservableCollection<IShape> AddedElements
+        {
+            get
+            {
+                return addedElements;
             }
         }
 

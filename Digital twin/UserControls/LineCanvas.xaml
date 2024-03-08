@@ -1,0 +1,100 @@
+﻿<UserControl x:Class="Digital_twin.UserControls.LineCanvas"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:template="clr-namespace:Digital_twin.Dataset.Support" 
+             xmlns:local="clr-namespace:Digital_twin.UserControls"
+             mc:Ignorable="d" 
+            d:DesignHeight="400" d:DesignWidth="500">
+
+    <UserControl.Resources>
+        <Style TargetType="Ellipse" x:Key="PointStyle">
+            <Setter Property="Fill" Value="Green"/>
+        </Style>
+
+        <DataTemplate x:Key="PointTemplate">
+            <Ellipse Style="{StaticResource PointStyle}" Width="5" Height="5">
+                <Ellipse.RenderTransform>
+                    <TransformGroup>
+                        <TranslateTransform X="{Binding X}" Y="{Binding Y}" />
+                        <RotateTransform Angle="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:PointCanvas}}, Path=Angle}" CenterX="225" CenterY="200"/>
+                    </TransformGroup>
+                </Ellipse.RenderTransform>
+            </Ellipse>
+        </DataTemplate>
+
+        <Style TargetType="Line" x:Key="PlaneLine">
+            <Setter Property="Stroke" Value="Black"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsInner}" Value="True">
+                    <Setter Property="StrokeThickness" Value="2"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsInner}" Value="False">
+                    <Setter Property="StrokeThickness" Value="3"/>
+                </DataTrigger>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True"/>
+                        <Condition Binding="{Binding IsInner}" Value="True"/>
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Stroke" Value="#FFB85D31"/>
+                    <Setter Property="StrokeThickness" Value="6"/>
+                </MultiDataTrigger>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True"/>
+                        <Condition Binding="{Binding IsInner}" Value="False"/>
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Stroke" Value="#FF3453B5"/>
+                    <Setter Property="StrokeThickness" Value="6"/>
+                </MultiDataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <DataTemplate x:Key="SegmentTemplate">
+            <Line Style="{StaticResource PlaneLine}" X1="{Binding Point1.X}" Y1="{Binding Point1.Y}" 
+              X2="{Binding Point2.X}" Y2="{Binding Point2.Y}">
+                <Line.RenderTransform>
+                    <RotateTransform Angle="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:LineCanvas}}, Path=Angle}" CenterX="225" CenterY="200"/>
+                </Line.RenderTransform>
+            </Line>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid>
+        <ListBox x:Name="CanvasListBox" ItemsSource="{Binding SelectedLevel.addedElements}" SelectedItem="{Binding SelectedShape}" 
+                 Height="400" Width="500"
+                 HorizontalAlignment="Center" VerticalAlignment="Center"
+                 Grid.Row="0">
+            <ListBox.Background>
+                <ImageBrush ImageSource="{Binding Image}" Stretch="UniformToFill" 
+                            Opacity="{Binding ImageOpacity}"/>
+            </ListBox.Background>
+
+            <ListBox.ItemTemplateSelector>
+                <template:ShapeTemplateSelector
+                    SegmentTemplate="{StaticResource SegmentTemplate}"
+                    PointTemplate="{StaticResource PointTemplate}"/>
+            </ListBox.ItemTemplateSelector>
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="IsSelected" Value="{Binding Content.IsSelected, Mode=TwoWay, RelativeSource={RelativeSource Self}}"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ListBoxItem">
+                                <ContentPresenter/>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListBox.ItemContainerStyle>
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas Background="Transparent" MouseLeftButtonDown="Canvas_MouseLeftButtonDown"></Canvas>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ListBox>
+    </Grid>
+</UserControl>
+

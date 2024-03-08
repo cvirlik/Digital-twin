@@ -6,21 +6,14 @@ using Digital_twin.Dataset.Types.Secondary;
 using Digital_twin.Dataset.Types.Tertiary;
 using Digital_twin.Draw_tools;
 using Digital_twin.File_tools;
-using Digital_twin.UserControls;
-using GeographicLib;
 using OsmSharp;
 using OsmSharp.Tags;
-//using OsmSharp.Tags;
 using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Shapes;
-//using GeographicLib;
 
 namespace Digital_twin.Dataset
 {
@@ -35,13 +28,22 @@ namespace Digital_twin.Dataset
         private RelayCommand _removeCommand;
         private RelayCommand _saveCommand;
 
-        private string state = "Edit";
+        private string state;
         public string State
         {
             get { return state; }
             set
             {
                 state = value;
+                if (SelectedLevel != null)
+                {
+                    foreach(IShape shape in SelectedLevel.AddedElements)
+                    {
+                        SelectedLevel.Shapes.Add(shape);
+                    }
+                    SelectedLevel.AddedElements.Clear();
+                }
+                Console.WriteLine("Current state: " + state);
                 OnPropertyChanged("State");
             }
         }
@@ -175,6 +177,7 @@ namespace Digital_twin.Dataset
 
         public DataManager()
         {
+            State = "Edit";
             ChangeOpacityCommand = new RelayCommand(ChangeOpacity);
         }
 
@@ -313,7 +316,7 @@ namespace Digital_twin.Dataset
             n.Tags = new TagsCollection();
             Types.Primary.Point point = new Types.Primary.Point(X, Y, n);
             point.obj = new NodeObject(n);
-            SelectedLevel.Shapes.Add(point);
+            SelectedLevel.AddedElements.Add(point);
         }
         public void AddWay(double X, double Y, double previousX, double previousY, bool removedStart)
         {
@@ -326,21 +329,21 @@ namespace Digital_twin.Dataset
                 Console.WriteLine("Place first point");
                 Types.Primary.Point point = new Types.Primary.Point(X, Y, n);
                 point.obj = new NodeObject(n);
-                SelectedLevel.Shapes.Add(point);
+                SelectedLevel.AddedElements.Add(point);
             }
             else
             {
                 if (!removedStart)
                 {
                     Console.WriteLine("Remove Start Point");
-                    SelectedLevel.Shapes.RemoveAt(SelectedLevel.Shapes.Count - 1);
+                    SelectedLevel.AddedElements.RemoveAt(SelectedLevel.AddedElements.Count - 1);
                 }
                 Node np = new Node();
                 np.Latitude = -1; np.Longitude = -1;
                 np.Tags = new TagsCollection();
                 Segment segment = new Segment(previousX, previousY, np, X, Y, n, true);
                 segment.obj = new NodeObject(n); //TODO: Fix objects.
-                SelectedLevel.Shapes.Add(segment);
+                SelectedLevel.AddedElements.Add(segment);
             }
         }
     }

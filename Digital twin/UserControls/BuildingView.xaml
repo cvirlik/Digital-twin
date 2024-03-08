@@ -9,98 +9,7 @@
              mc:Ignorable="d">
 
     <UserControl.Resources>
-        <Style TargetType="Line" x:Key="PlaneLine">
-            <Setter Property="Stroke" Value="Black"/>
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding IsInner}" Value="True">
-                    <Setter Property="StrokeThickness" Value="2"/>
-                </DataTrigger>
-                <DataTrigger Binding="{Binding IsInner}" Value="False">
-                    <Setter Property="StrokeThickness" Value="3"/>
-                </DataTrigger>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True"/>
-                        <Condition Binding="{Binding IsInner}" Value="True"/>
-                        <Condition Binding="{Binding DataContext.State, RelativeSource={RelativeSource FindAncestor, 
-                            AncestorType={x:Type local:BuildingView}}}" Value="Edit"/>
-                    </MultiDataTrigger.Conditions>
-                    <Setter Property="Stroke" Value="#FFB85D31"/>
-                    <Setter Property="StrokeThickness" Value="6"/>
-                </MultiDataTrigger>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True"/>
-                        <Condition Binding="{Binding IsInner}" Value="False"/>
-                        <Condition Binding="{Binding DataContext.State, RelativeSource={RelativeSource FindAncestor, 
-                            AncestorType={x:Type local:BuildingView}}}" Value="Edit"/>
-                    </MultiDataTrigger.Conditions>
-                    <Setter Property="Stroke" Value="#FF3453B5"/>
-                    <Setter Property="StrokeThickness" Value="6"/>
-                </MultiDataTrigger>
-            </Style.Triggers>
-        </Style>
-
-        <Style TargetType="Polygon" x:Key="PolygomRoom">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding IsInner}" Value="True">
-                    <Setter Property="Fill" Value="DarkTurquoise"/>
-                </DataTrigger>
-                <DataTrigger Binding="{Binding IsInner}" Value="False">
-                    <Setter Property="Fill" Value="#FF7BBEBE"/>
-                </DataTrigger>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True"/>
-                        <Condition Binding="{Binding DataContext.State, RelativeSource={RelativeSource FindAncestor, 
-                            AncestorType={x:Type local:BuildingView}}}" Value="Edit"/>
-                    </MultiDataTrigger.Conditions>
-                    <Setter Property="Fill" Value="DarkSeaGreen"/>
-                </MultiDataTrigger>
-            </Style.Triggers>
-        </Style>
-
-        <Style TargetType="Ellipse" x:Key="PointStyle">
-            <Setter Property="Fill" Value="Red"/>
-            <Style.Triggers>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True"/>
-                        <Condition Binding="{Binding DataContext.State, RelativeSource={RelativeSource FindAncestor, 
-                            AncestorType={x:Type local:BuildingView}}}" Value="Edit"/>
-                    </MultiDataTrigger.Conditions>
-                    <Setter Property="Fill" Value="Blue"/>
-                </MultiDataTrigger>
-            </Style.Triggers>
-        </Style>
-
-        <DataTemplate x:Key="SegmentTemplate">
-            <Line Style="{StaticResource PlaneLine}" X1="{Binding Point1.X}" Y1="{Binding Point1.Y}" 
-              X2="{Binding Point2.X}" Y2="{Binding Point2.Y}">
-                <Line.RenderTransform>
-                    <RotateTransform Angle="{Binding ElementName=MySlider, Path=Value}" CenterX="225" CenterY="200"/>
-                </Line.RenderTransform>
-            </Line>
-        </DataTemplate>
-
-        <DataTemplate x:Key="PolygonTemplate">
-            <Polygon Style="{StaticResource PolygomRoom}" Points="{Binding Vertices}">
-                <Polygon.RenderTransform>
-                    <RotateTransform Angle="{Binding ElementName=MySlider, Path=Value}" CenterX="225" CenterY="200"/>
-                </Polygon.RenderTransform>
-            </Polygon>
-        </DataTemplate>
-
-        <DataTemplate x:Key="PointTemplate">
-            <Ellipse Style="{StaticResource PointStyle}" Width="5" Height="5">
-                <Ellipse.RenderTransform>
-                    <TransformGroup>
-                        <TranslateTransform X="{Binding X}" Y="{Binding Y}" />
-                        <RotateTransform Angle="{Binding ElementName=MySlider, Path=Value}" CenterX="225" CenterY="200"/>
-                    </TransformGroup>
-                </Ellipse.RenderTransform>
-            </Ellipse>
-        </DataTemplate>
+        <template:VisibilityToIsHitTestVisibleConverter x:Key="VisibilityToIsHitTestVisibleConverter"/>
     </UserControl.Resources>
 
     <Grid>
@@ -108,41 +17,43 @@
             <RowDefinition Height="Auto" MinHeight="400"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <ListBox x:Name="CanvasListBox" ItemsSource="{Binding SelectedLevel.shapes}" SelectedItem="{Binding SelectedShape}" 
-                 Height="400" Width="500"
-                 HorizontalAlignment="Center" VerticalAlignment="Center"
-                 Grid.Row="0">
-            <ListBox.Background>
-                <ImageBrush ImageSource="{Binding Image}" Stretch="UniformToFill" 
-                            Opacity="{Binding ImageOpacity}"/>
-            </ListBox.Background>
-            
-            <ListBox.ItemTemplateSelector>
-                <template:ShapeTemplateSelector
-                    SegmentTemplate="{StaticResource SegmentTemplate}"
-                    PolygonTemplate="{StaticResource PolygonTemplate}" 
-                    PointTemplate="{StaticResource PointTemplate}" />
-            </ListBox.ItemTemplateSelector>
-            <ListBox.ItemContainerStyle>
-                <Style TargetType="ListBoxItem">
-                    <Setter Property="IsSelected" Value="{Binding Content.IsSelected, Mode=TwoWay, RelativeSource={RelativeSource Self}}"/>
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="ListBoxItem">
-                                <ContentPresenter/>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
+        <local:EditCanvas x:Name="EditCanvasControl" DataContext="{StaticResource Manager}" 
+                          Angle="{Binding ElementName=MySlider, Path=Value}" Grid.Row="0">
+            <local:EditCanvas.IsHitTestVisible>
+                <MultiBinding Converter="{StaticResource VisibilityToIsHitTestVisibleConverter}">
+                    <Binding ElementName="PointCanvasControl" Path="Visibility" />
+                    <Binding ElementName="LineCanvasControl" Path="Visibility" />
+                </MultiBinding>
+            </local:EditCanvas.IsHitTestVisible>
+        </local:EditCanvas>
+
+
+        <local:PointCanvas x:Name="PointCanvasControl" DataContext="{StaticResource Manager}" Angle="{Binding ElementName=MySlider, Path=Value}" Grid.Row="0">
+            <local:PointCanvas.Style>
+                <Style TargetType="{x:Type local:PointCanvas}">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Source={StaticResource Manager}, Path=State}" Value="Point">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
                 </Style>
-            </ListBox.ItemContainerStyle>
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <Canvas Background="Transparent" MouseLeftButtonDown="Canvas_MouseLeftButtonDown"
-                            MouseLeftButtonUp="Canvas_MouseLeftButtonUp"
-                            MouseMove="Canvas_MouseMove"></Canvas>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-        </ListBox>
+            </local:PointCanvas.Style>
+        </local:PointCanvas>
+        
+        <local:LineCanvas x:Name="LineCanvasControl" DataContext="{StaticResource Manager}" Angle="{Binding ElementName=MySlider, Path=Value}" Grid.Row="0">
+            <local:LineCanvas.Style>
+                <Style TargetType="{x:Type local:LineCanvas}">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Source={StaticResource Manager}, Path=State}" Value="Line">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </local:LineCanvas.Style>
+        </local:LineCanvas>
+        
         <StackPanel Orientation="Horizontal" Grid.Row="1">
             <Label Content="Angle" VerticalAlignment="Center" Margin="10"/>
             <Slider x:Name="MySlider" Minimum="0" Maximum="360" Width="340" VerticalAlignment="Center">

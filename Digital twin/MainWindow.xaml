@@ -10,7 +10,6 @@
         Title="Digital Twin" Height="750" Width="900">
 
     <Window.Resources>
-        <dataset:DataManager x:Key="Manager"/>
         <template:PointToMarginConverter x:Key="PointToMarginConverter"/>
     </Window.Resources>
     <Window.DataContext>
