@@ -99,7 +99,10 @@
         <ListBox x:Name="CanvasListBox" ItemsSource="{Binding SelectedLevel.shapes}" SelectedItem="{Binding SelectedShape}" 
                  Height="400" Width="500"
                  HorizontalAlignment="Center" VerticalAlignment="Center"
-                 Grid.Row="0">
+                 Grid.Row="0"
+                 MouseMove="Canvas_MouseMove"
+                 MouseLeftButtonUp="Canvas_MouseLeftButtonUp"
+                 PreviewMouseLeftButtonDown="Canvas_MouseLeftButtonDown">
             <ListBox.Background>
                 <ImageBrush ImageSource="{Binding Image}" Stretch="UniformToFill" 
                             Opacity="{Binding ImageOpacity}"/>
@@ -125,9 +128,8 @@
             </ListBox.ItemContainerStyle>
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <Canvas Background="Transparent" MouseLeftButtonDown="Canvas_MouseLeftButtonDown"
-                            MouseLeftButtonUp="Canvas_MouseLeftButtonUp"
-                            MouseMove="Canvas_MouseMove"></Canvas>
+                    <Canvas>
+                    </Canvas>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
         </ListBox>

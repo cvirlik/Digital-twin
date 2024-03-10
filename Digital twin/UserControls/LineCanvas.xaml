@@ -83,7 +83,7 @@
             </ListBox.ItemContainerStyle>
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <Canvas Background="Transparent" MouseLeftButtonDown="Canvas_MouseLeftButtonDown"></Canvas>
+                    <Canvas  Height="400" Width="500" Background="Transparent" MouseLeftButtonDown="Canvas_MouseLeftButtonDown"></Canvas>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
         </ListBox>

@@ -43,12 +43,6 @@ namespace Digital_twin.Dataset
                 
                 if (SelectedLevel != null)
                 {
-                    /*foreach(CanvasObject shape in SelectedLevel.addedElements)
-                    {
-                        SelectedLevel.AddObjects(shape, true);
-                    }
-                    SelectedLevel.AddedShapes.Clear();
-                    SelectedLevel.addedElements.Clear();*/
                     if(currentActiveObject != null)
                     {
                         SelectedLevel.AddObjects(currentActiveObject, true);
@@ -113,6 +107,7 @@ namespace Digital_twin.Dataset
 
         private void ReadOSMFile(string filename)
         {
+            if(SelectedLevel != null) SelectedLevel.Shapes.Clear();
             Levels.Clear();
             Nodes.Clear();
             Ways.Clear();
@@ -345,7 +340,7 @@ namespace Digital_twin.Dataset
             (n.Latitude, n.Longitude)= GpsUtils.MetersToLatLon(X, Y);
             n.Tags = new TagsCollection();
             NodeObject nodeObject = new NodeObject(n);
-            SelectedLevel.AddObjects(nodeObject, false);
+            SelectedLevel.AddObjects(nodeObject, true);
         }
 
         CanvasObject currentActiveObject;
@@ -362,8 +357,6 @@ namespace Digital_twin.Dataset
 
             if (previousX == -1 && previousY == -1) // If it start control point -- create placeholder NodeObject
             {
-                Console.WriteLine("Place first point");
-                
                 Types.Primary.Point point = new Types.Primary.Point(X, Y, n);
                 SelectedLevel.addedShapes.Add(point);
                 startPoint = n;
@@ -403,7 +396,6 @@ namespace Digital_twin.Dataset
         }
         public void CloseWay(double X, double Y)
         {
-            Console.WriteLine("Creating");
             Node n = new Node();
             (X, Y) = GpsUtils.CanvasToMeters(X, Y);
             (n.Latitude, n.Longitude) = GpsUtils.MetersToLatLon(X, Y);

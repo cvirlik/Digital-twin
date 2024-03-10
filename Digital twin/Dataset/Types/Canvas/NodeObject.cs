@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using OsmSharp;
+﻿using OsmSharp;
 using Digital_twin.Dataset.Types.Primary;
 using Digital_twin.Draw_tools;
 using Digital_twin.Dataset.Types.Secondary;

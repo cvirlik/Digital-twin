@@ -12,8 +12,24 @@ namespace Digital_twin.Dataset.Types.Primary
 {
     public class Point : ViewModelBase, IShape
     {
-        public double X { get; set; }
-        public double Y { get; set; }
+        private double x;
+        public double X
+        {
+            get { return x; }
+            set
+            {
+                x = value; OnPropertyChanged(nameof(X));
+            }
+        }
+        private double y;
+        public double Y
+        {
+            get { return y; }
+            set
+            {
+                y = value; OnPropertyChanged(nameof(Y));
+            }
+        }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
         public Node node { get; set; }
@@ -38,10 +54,10 @@ namespace Digital_twin.Dataset.Types.Primary
         }
             
 
-        public Point(double x, double y, Node _node)
+        public Point(double _x, double _y, Node _node)
         {
-            X = x;
-            Y = y;
+            x = _x;
+            y = _y;
             node = _node;
             Latitude = (double)node.Latitude;
             Longitude = (double)node.Longitude;

@@ -1,10 +1,7 @@
 ﻿using Digital_twin.Dataset.Types.Primary;
 using Digital_twin.Dataset.Types.Canvas;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Windows.Controls;
 
 namespace Digital_twin.Dataset.Types
 {
@@ -44,7 +41,6 @@ namespace Digital_twin.Dataset.Types
                 canvasObjects.Add(obj);
                 foreach (IShape shape in obj.Shapes)
                 {
-                    Console.WriteLine("Adding shape");
                     shapes.Add(shape);
                 }
             }
