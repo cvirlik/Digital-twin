@@ -87,16 +87,6 @@ namespace Digital_twin.Dataset.Support
             return Math.PI * angle / 180.0;
         }
 
-        public static (double Latitude, double Longitude) CartesianToGeographic(double x, double y, double z)
-        {
-            double r = Math.Sqrt(x * x + y * y + z * z); // Distance from origin to point (x, y, z)
-
-            double latitude = Math.Asin(z / r) * (180 / Math.PI); // Convert radians to degrees
-            double longitude = Math.Atan2(y, x) * (180 / Math.PI); // Convert radians to degrees
-
-            return (latitude, longitude);
-        }
-
         private const double originShift = 2 * Math.PI * 6378137 / 2.0;
         private const double initialResolution = 2 * Math.PI * 6378137 / 256;
         public static (double, double) LatLonToMeters(double lat, double lon)
@@ -120,19 +110,17 @@ namespace Digital_twin.Dataset.Support
         private static double canvasWidth = 500;
         private static double canvasHeight = 400;
 
-        public static (double, double) MetersToCanvas(double mx, double my, double minX,
-            double maxX, double minY, double maxY)
+        public static (double, double) MetersToCanvas(double mx, double my)
         {
-            double x = ((mx - minX) / (maxX - minX)) * canvasWidth;
-            double y = ((my - minY) / (maxY - minY)) * canvasHeight;
+            double x = ((mx - DataManager.minX) / (DataManager.maxX - DataManager.minX)) * canvasWidth;
+            double y = ((my - DataManager.minY) / (DataManager.maxY - DataManager.minY)) * canvasHeight;
             return (x, y);
         }
 
-        public static (double, double) CanvasToMeters(double x, double y, double minX,
-            double maxX, double minY, double maxY)
+        public static (double, double) CanvasToMeters(double x, double y)
         {
-            double mx = x / canvasWidth * (maxX - minX) + minX;
-            double my = y / canvasHeight * (maxY - minY) + minY;
+            double mx = x / canvasWidth * (DataManager.maxX - DataManager.minX) + DataManager.minX;
+            double my = y / canvasHeight * (DataManager.maxY - DataManager.minY) + DataManager.minY;
             return (mx, my);
         }
     }

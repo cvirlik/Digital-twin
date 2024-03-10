@@ -1,11 +1,6 @@
 ﻿using Digital_twin.Dataset.Types.Canvas;
-using Digital_twin.Dataset.Types.Primary;
-using Digital_twin.Dataset.Types.Secondary;
 using Digital_twin.Dataset.Types.Tertiary;
-using Digital_twin.Draw_tools;
 using OsmSharp;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 

@@ -3,6 +3,7 @@ using Digital_twin.Dataset.Types.Secondary;
 using Digital_twin.Draw_tools;
 using System.Collections.ObjectModel;
 using OsmSharp;
+using System.ServiceModel.PeerResolvers;
 
 namespace Digital_twin.Dataset.Types.Canvas
 {
@@ -37,5 +38,12 @@ namespace Digital_twin.Dataset.Types.Canvas
         public Way Way { get { return way; } }
         public ObservableCollection<Node> Nodes { get { return nodes; } }
         public ObservableCollection<Segment> Segments { get { return segments; } }
+
+        public void UpdateSegments(Segment segment)
+        {
+            segment.obj = this;
+            segments.Add(segment);  
+            shapes.Add(segment);
+        }
     }
 }

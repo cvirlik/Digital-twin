@@ -7,7 +7,7 @@ using OsmSharp;
 namespace Digital_twin.Dataset.Types.Canvas
 {
     // Class for rooms/buildings
-    public abstract class ClosedWayObject : CanvasObject
+    public class ClosedWayObject : CanvasObject
     {
         // OSM DATA
         protected ObservableCollection<Node> nodes { get; set; }

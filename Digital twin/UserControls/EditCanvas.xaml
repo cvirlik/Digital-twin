@@ -22,8 +22,6 @@
                     <MultiDataTrigger.Conditions>
                         <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True"/>
                         <Condition Binding="{Binding IsInner}" Value="True"/>
-                        <!--<Condition Binding="{Binding DataContext.State, RelativeSource={RelativeSource FindAncestor, 
-                            AncestorType={x:Type local:BuildingView}}}" Value="Edit"/>-->
                     </MultiDataTrigger.Conditions>
                     <Setter Property="Stroke" Value="#FFB85D31"/>
                     <Setter Property="StrokeThickness" Value="6"/>

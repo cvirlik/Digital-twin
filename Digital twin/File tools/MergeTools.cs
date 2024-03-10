@@ -2,9 +2,6 @@
 using Digital_twin.Dataset.Types.Canvas;
 using System.Collections.ObjectModel;
 using OsmSharp;
-using System.Collections.Generic;
-using System.Windows.Shapes;
-using Digital_twin.Dataset.Types.Primary;
 using Sec = Digital_twin.Dataset.Types.Secondary;
 using OsmSharp.Tags;
 using System.Linq;
@@ -16,7 +13,8 @@ namespace Digital_twin.File_tools
     {
         public static ObservableCollection<Node> mergeNodes(ObservableCollection<Level> levels, ObservableCollection<Node> nodes)
         {
-            ObservableCollection<Node> updatedNodes = new ObservableCollection<Node>();
+            Console.WriteLine("Merge nodes");
+            ObservableCollection <Node> updatedNodes = new ObservableCollection<Node>();
 
             foreach (Level level in levels)
             {
@@ -39,8 +37,9 @@ namespace Digital_twin.File_tools
                 }
             }
 
-            foreach (var updatedNode in updatedNodes)
+            foreach (Node updatedNode in updatedNodes)
             {
+                Console.WriteLine("Saving node ID: " + updatedNode.Id + " Lat:" + updatedNode.Latitude + " Long:" + updatedNode.Latitude);
                 var originalNode = nodes.FirstOrDefault(n => n.Id == updatedNode.Id);
                 if (originalNode != null)
                 {
@@ -54,6 +53,7 @@ namespace Digital_twin.File_tools
 
         public static ObservableCollection<Way> mergeWays(ObservableCollection<Level> levels, ObservableCollection<Way> ways)
         {
+            Console.WriteLine("Merge ways");
             ObservableCollection<Way> updatedWays = new ObservableCollection<Way>();
 
             foreach (Level level in levels)
@@ -67,7 +67,6 @@ namespace Digital_twin.File_tools
                         var osmSharpTags = new TagsCollection();
                         foreach (Sec.Tag tag in upd.Tags)
                         {
-                            Console.WriteLine(tag.Key + " : " + tag.Value);
                             osmSharpTags.Add(tag.Key, tag.Value);
                         }
                         way.Tags = osmSharpTags;   

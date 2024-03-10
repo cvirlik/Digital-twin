@@ -23,6 +23,11 @@ namespace Digital_twin.Dataset
         private IShape _selectedShape;
         public static double maxLatitude;
         public static double minLongitude;
+
+        public static double maxX;
+        public static double maxY;
+        public static double minX;
+        public static double minY;
         public static Tuple<int, int> central_offset;
         private RelayCommand _addCommand;
         private RelayCommand _removeCommand;
@@ -35,14 +40,24 @@ namespace Digital_twin.Dataset
             set
             {
                 state = value;
+                
                 if (SelectedLevel != null)
                 {
-                    foreach(IShape shape in SelectedLevel.AddedElements)
+                    /*foreach(CanvasObject shape in SelectedLevel.addedElements)
                     {
-                        SelectedLevel.Shapes.Add(shape);
+                        SelectedLevel.AddObjects(shape, true);
                     }
-                    SelectedLevel.AddedElements.Clear();
+                    SelectedLevel.AddedShapes.Clear();
+                    SelectedLevel.addedElements.Clear();*/
+                    if(currentActiveObject != null)
+                    {
+                        SelectedLevel.AddObjects(currentActiveObject, true);
+                        SelectedLevel.AddedShapes.Clear();
+                        SelectedLevel.addedElements.Clear();
+                    }
                 }
+                currentActiveObject = null;
+                startPoint = null;
                 Console.WriteLine("Current state: " + state);
                 OnPropertyChanged("State");
             }
@@ -117,6 +132,20 @@ namespace Digital_twin.Dataset
                 }
 
             }
+
+            maxX = double.MinValue; minX = double.MaxValue; maxY = double.MinValue; minY = double.MaxValue;
+            double x, y;
+
+            foreach (Node node in builldingNodes)
+            {
+                (x, y) = GpsUtils.LatLonToMeters((double)node.Latitude, (double)node.Longitude);
+                maxX = Math.Max(maxX, x);
+                minX = Math.Min(minX, x);
+                maxY = Math.Max(maxY, y);
+                minY = Math.Min(minY, y);
+            }
+
+
             maxLatitude = builldingNodes.Max(node => (double)node.Latitude);
             minLongitude = builldingNodes.Min(node => (double)node.Longitude);
 
@@ -136,22 +165,22 @@ namespace Digital_twin.Dataset
                 Level level = new Level(i);
                 foreach (var building in Buildings)
                 {
-                    level.AddObjects(building);
+                    level.AddObjects(building, true);
                 }
 
                 foreach (var room in Parser.getIndoorRoomLayout(Nodes, Ways, i.ToString()))
                 {
-                    level.AddObjects(room);
+                    level.AddObjects(room, true);
                 }
 
                 foreach (var way in Parser.getIndoorWayLayout(Nodes, Ways, i.ToString()))
                 {
-                    level.AddObjects(way);
+                    level.AddObjects(way, true);
                 }
 
                 foreach (var point in Parser.getDoorsLevel(Nodes, i.ToString()))
                 {
-                    level.AddObjects(point);
+                    level.AddObjects(point, true);
                 }
 
                 Levels.Add(level);
@@ -312,39 +341,93 @@ namespace Digital_twin.Dataset
         public void AddNode(double X, double Y)
         {
             Node n = new Node();
-            n.Latitude = -1; n.Longitude = -1;
+            (X, Y) = GpsUtils.CanvasToMeters(X, Y);
+            (n.Latitude, n.Longitude)= GpsUtils.MetersToLatLon(X, Y);
             n.Tags = new TagsCollection();
-            Types.Primary.Point point = new Types.Primary.Point(X, Y, n);
-            point.obj = new NodeObject(n);
-            SelectedLevel.AddedElements.Add(point);
+            NodeObject nodeObject = new NodeObject(n);
+            SelectedLevel.AddObjects(nodeObject, false);
         }
+
+        CanvasObject currentActiveObject;
+        private Node startPoint;
         public void AddWay(double X, double Y, double previousX, double previousY, bool removedStart)
         {
+            // Create new control point
             Node n = new Node();
-            n.Latitude = -1; n.Longitude = -1;
+            (X, Y) = GpsUtils.CanvasToMeters(X, Y);
+            (n.Latitude, n.Longitude) = GpsUtils.MetersToLatLon(X, Y);
             n.Tags = new TagsCollection();
+            (X, Y) = GpsUtils.MetersToCanvas(X, Y);
 
-            if (previousX == -1 && previousY == -1)
+
+            if (previousX == -1 && previousY == -1) // If it start control point -- create placeholder NodeObject
             {
                 Console.WriteLine("Place first point");
+                
                 Types.Primary.Point point = new Types.Primary.Point(X, Y, n);
-                point.obj = new NodeObject(n);
-                SelectedLevel.AddedElements.Add(point);
+                SelectedLevel.addedShapes.Add(point);
+                startPoint = n;
             }
-            else
+            else // If it at least one segment
             {
                 if (!removedStart)
                 {
-                    Console.WriteLine("Remove Start Point");
-                    SelectedLevel.AddedElements.RemoveAt(SelectedLevel.AddedElements.Count - 1);
+                    SelectedLevel.AddedShapes.RemoveAt(SelectedLevel.AddedShapes.Count - 1);
                 }
-                Node np = new Node();
-                np.Latitude = -1; np.Longitude = -1;
-                np.Tags = new TagsCollection();
-                Segment segment = new Segment(previousX, previousY, np, X, Y, n, true);
-                segment.obj = new NodeObject(n); //TODO: Fix objects.
-                SelectedLevel.AddedElements.Add(segment);
+                if (currentActiveObject == null)
+                {
+                    ObservableCollection<Node> _nodes = new ObservableCollection<Node>
+                    {
+                        startPoint, n
+                    };
+                    //TODO: add nodes?
+                    Way way = new Way();
+                    way.Tags = new TagsCollection();
+                    currentActiveObject = new OpenedWayObject(_nodes, way, true);
+                    foreach (IShape segment in currentActiveObject.Shapes)
+                    {
+                        SelectedLevel.AddedShapes.Add(segment);
+                    }
+                }
+                else
+                {
+                    Node previousPoint = ((OpenedWayObject)currentActiveObject).Nodes.Last();
+                    Segment addedSegment = new Segment(previousX, previousY, previousPoint, X, Y, n, true);
+                    ((OpenedWayObject)currentActiveObject).UpdateSegments(addedSegment);
+                    ((OpenedWayObject)currentActiveObject).Nodes.Add(n);
+
+                    SelectedLevel.AddedShapes.Add(addedSegment);
+                }
             }
+
+        }
+        public void CloseWay(double X, double Y)
+        {
+            Console.WriteLine("Creating");
+            Node n = new Node();
+            (X, Y) = GpsUtils.CanvasToMeters(X, Y);
+            (n.Latitude, n.Longitude) = GpsUtils.MetersToLatLon(X, Y);
+            n.Tags = new TagsCollection();
+            (X, Y) = GpsUtils.MetersToCanvas(X, Y);
+
+            double sx, sy;
+            (sx, sy) = GpsUtils.LatLonToMeters((double)startPoint.Latitude, (double)startPoint.Longitude);
+            (sx, sy) = GpsUtils.MetersToCanvas(sx, sy);
+
+            Segment addedSegment = new Segment(sx, sy, startPoint, X, Y, n, true);
+            ((OpenedWayObject)currentActiveObject).Segments.Add(addedSegment);
+            ((OpenedWayObject)currentActiveObject).Nodes.Add(n);
+            ((OpenedWayObject)currentActiveObject).Nodes.Add(startPoint);
+
+
+            ClosedWayObject closedWayObject = new ClosedWayObject(((OpenedWayObject)currentActiveObject).Nodes,
+                ((OpenedWayObject)currentActiveObject).Way, true);
+            SelectedLevel.AddObjects(closedWayObject, true);
+            currentActiveObject = null;
+            startPoint = null;
+            SelectedLevel.AddedShapes.Clear();
+            SelectedLevel.addedElements.Clear();
+            Console.WriteLine("Finish");
         }
     }
 }

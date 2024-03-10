@@ -18,7 +18,7 @@
                 <Ellipse.RenderTransform>
                     <TransformGroup>
                         <TranslateTransform X="{Binding X}" Y="{Binding Y}" />
-                        <RotateTransform Angle="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:PointCanvas}}, Path=Angle}" CenterX="225" CenterY="200"/>
+                        <RotateTransform Angle="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:LineCanvas}}, Path=Angle}" CenterX="225" CenterY="200"/>
                     </TransformGroup>
                 </Ellipse.RenderTransform>
             </Ellipse>
@@ -36,17 +36,8 @@
                 <MultiDataTrigger>
                     <MultiDataTrigger.Conditions>
                         <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True"/>
-                        <Condition Binding="{Binding IsInner}" Value="True"/>
                     </MultiDataTrigger.Conditions>
-                    <Setter Property="Stroke" Value="#FFB85D31"/>
-                    <Setter Property="StrokeThickness" Value="6"/>
-                </MultiDataTrigger>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True"/>
-                        <Condition Binding="{Binding IsInner}" Value="False"/>
-                    </MultiDataTrigger.Conditions>
-                    <Setter Property="Stroke" Value="#FF3453B5"/>
+                    <Setter Property="Stroke"  Value="Green"/>
                     <Setter Property="StrokeThickness" Value="6"/>
                 </MultiDataTrigger>
             </Style.Triggers>
@@ -54,7 +45,8 @@
 
         <DataTemplate x:Key="SegmentTemplate">
             <Line Style="{StaticResource PlaneLine}" X1="{Binding Point1.X}" Y1="{Binding Point1.Y}" 
-              X2="{Binding Point2.X}" Y2="{Binding Point2.Y}">
+              X2="{Binding Point2.X}" Y2="{Binding Point2.Y}"
+                  MouseLeftButtonDown="Line_MouseLeftButtonDown">
                 <Line.RenderTransform>
                     <RotateTransform Angle="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:LineCanvas}}, Path=Angle}" CenterX="225" CenterY="200"/>
                 </Line.RenderTransform>
@@ -63,7 +55,7 @@
     </UserControl.Resources>
 
     <Grid>
-        <ListBox x:Name="CanvasListBox" ItemsSource="{Binding SelectedLevel.addedElements}" SelectedItem="{Binding SelectedShape}" 
+        <ListBox x:Name="CanvasListBox" ItemsSource="{Binding SelectedLevel.addedShapes}"
                  Height="400" Width="500"
                  HorizontalAlignment="Center" VerticalAlignment="Center"
                  Grid.Row="0">

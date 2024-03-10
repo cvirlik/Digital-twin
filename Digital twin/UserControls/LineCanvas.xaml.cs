@@ -45,6 +45,16 @@ namespace Digital_twin.UserControls
                 pY = position.Y;
             }
         }
+
+        private void Line_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Console.WriteLine("Click on closing line");
+            dataManager.CloseWay(pX, pY);
+            pX = -1; pY = -1;
+            startX = null; startY = null;
+        }
+
+
         private void Canvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var position = e.GetPosition(CanvasListBox);
