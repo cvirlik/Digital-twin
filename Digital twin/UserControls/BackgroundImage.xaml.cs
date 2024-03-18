@@ -1,17 +1,14 @@
 ﻿using Digital_twin.Dataset;
 using System;
 using System.ComponentModel;
-using System.Numerics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Media3D;
 
 namespace Digital_twin.UserControls
 {
-    /// <summary>
-    /// Interaction logic for BackgroundImage.xaml
-    /// </summary>
     public partial class BackgroundImage : UserControl, INotifyPropertyChanged
     {
         public BackgroundImage()
@@ -24,12 +21,16 @@ namespace Digital_twin.UserControls
         }
 
         private Point _startPoint;
+        private Point _mouseOffset;
+        private double _previousAngle;
+
         private bool _isResizing;
         private double[] ratio = new double[2];
 
         private void Image_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             _startPoint = e.GetPosition(MainGrid);
+            _mouseOffset = e.GetPosition(MainImage);
             _isResizing = true;
             ratio[0] = ImageWidth <= ImageHeight ? 1 : ImageWidth / ImageHeight;
             ratio[1] = ImageHeight <= ImageWidth ? 1 : ImageHeight / ImageWidth;
@@ -37,9 +38,9 @@ namespace Digital_twin.UserControls
 
         private void Image_MouseMove(object sender, MouseEventArgs e)
         {
-            if (_isResizing)
+            var currentPoint = e.GetPosition(MainGrid);
+            if (_isResizing && (Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt)))
             {
-                var currentPoint = e.GetPosition(MainGrid);
                 double diffX = _startPoint.X - currentPoint.X;
                 double diffY = _startPoint.Y - currentPoint.Y;
                 double diff = Math.Abs(Math.Min(diffX, diffY));
@@ -58,11 +59,36 @@ namespace Digital_twin.UserControls
                 ImageWidth = Math.Max(10, Math.Min(ImageWidth + changeX * sign, GridWidth));
                 ImageHeight = Math.Max(10, Math.Min(ImageHeight + changeY * sign, GridHeight));
             }
+            if (_isResizing && Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+            {
+                double newX = currentPoint.X - ImageWidth / 2;
+                double newY = currentPoint.Y - ImageHeight / 2;
+                MainImage.Margin = new Thickness(newX, newY, 0, 0);
+            }
+            if (_isResizing && Keyboard.IsKeyDown(Key.R))
+            {
+                var vectorStart = Point.Subtract(_startPoint, new Point(GridWidth / 2, GridHeight / 2));
+                var vectorEnd = Point.Subtract(currentPoint, new Point(GridWidth / 2, GridHeight / 2));
+
+                double angle = Vector.AngleBetween(vectorStart, vectorEnd);
+                double scale = 0.01;
+                angle *= scale;
+
+                RotateTransform rotateTransform = MainImage.RenderTransform as RotateTransform;
+                if (rotateTransform != null)
+                {
+                    angle += rotateTransform.Angle;
+                }
+                MainImage.RenderTransformOrigin = new Point(0.5, 0.5);
+                MainImage.RenderTransform = new RotateTransform(angle);
+                _previousAngle = angle;
+            }
         }
 
         private void Image_MouseUp(object sender, MouseButtonEventArgs e)
         {
             _isResizing = false;
+            _previousAngle = 0;
         }
 
 

@@ -8,11 +8,11 @@
              d:DesignHeight="400" d:DesignWidth="500">
     <Grid Height="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:BackgroundImage}}, Path=GridHeight}" 
       Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:BackgroundImage}}, Path=GridWidth}" 
-      x:Name="MainGrid"
+      x:Name="MainGrid" ClipToBounds="True"
           PreviewMouseDown="Image_PreviewMouseDown" 
                MouseUp="Image_MouseUp" 
                MouseMove="Image_MouseMove" Background="White">
-        <Image Source="{Binding Image}" Opacity="{Binding ImageOpacity}" Stretch="UniformToFill"
+        <Image x:Name="MainImage" Source="{Binding Image}" Opacity="{Binding ImageOpacity}" Stretch="UniformToFill"
                Height="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:BackgroundImage}}, Path=ImageHeight}" 
                Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:BackgroundImage}}, Path=ImageWidth}"/>
     </Grid>
