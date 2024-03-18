@@ -113,14 +113,14 @@ namespace Digital_twin.Dataset.Support
         public static (double, double) MetersToCanvas(double mx, double my)
         {
             double x = ((mx - DataManager.minX) / (DataManager.maxX - DataManager.minX)) * canvasWidth;
-            double y = ((my - DataManager.minY) / (DataManager.maxY - DataManager.minY)) * canvasHeight;
+            double y = canvasHeight - ((my - DataManager.minY) / (DataManager.maxY - DataManager.minY)) * canvasHeight;
             return (x, y);
         }
 
         public static (double, double) CanvasToMeters(double x, double y)
         {
             double mx = x / canvasWidth * (DataManager.maxX - DataManager.minX) + DataManager.minX;
-            double my = y / canvasHeight * (DataManager.maxY - DataManager.minY) + DataManager.minY;
+            double my = (canvasHeight - y) / canvasHeight * (DataManager.maxY - DataManager.minY) + DataManager.minY;
             return (mx, my);
         }
     }
