@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:dataset="clr-namespace:Digital_twin.Dataset"
         xmlns:template="clr-namespace:Digital_twin.Dataset.Support"
         xmlns:userControls="clr-namespace:Digital_twin.UserControls"
         mc:Ignorable="d"
@@ -45,6 +44,7 @@
                         <userControls:BrowseImage  FileName="{Binding CurrentImage, Mode=TwoWay}"/>
                         <userControls:ImageControl EnableCommand="{Binding ChangeOpacityCommand}"/>
                         <userControls:Edit DataContext="{StaticResource Manager}"/>
+                        <userControls:Move DataContext="{StaticResource Manager}"/>
                         <userControls:DrawPoint DataContext="{StaticResource Manager}"/>
                         <userControls:DrawLine DataContext="{StaticResource Manager}"/>
                     </StackPanel>
@@ -55,13 +55,18 @@
                 </Grid>
             </StackPanel>
 
-            <ListBox  Grid.Row="0" Grid.Column="1" Name="LevelsListBox" ItemsSource="{Binding Levels}" SelectedItem="{Binding SelectedLevel}">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding Name, StringFormat='Level {0}'}"/>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+            <StackPanel Grid.Row="0" Grid.Column="1">
+                <ListBox Name="LevelsListBox" ItemsSource="{Binding Levels}" SelectedItem="{Binding SelectedLevel}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name, StringFormat='Level {0}'}"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <Button Content="Add new building level" Command="{Binding AddLevelCommand}"></Button>
+                <Button Content="Up" Command="{Binding MoveLevelUpCommand}"></Button>
+                <Button Content="Down" Command="{Binding MoveLevelDownCommand}"></Button>
+            </StackPanel>
 
             <StackPanel Grid.Row="1" Grid.Column="0">
                 <ListView Height="200"  Name="TagListView" ItemsSource="{Binding SelectedShape.Tags}" 

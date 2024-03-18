@@ -1,0 +1,19 @@
+﻿<UserControl x:Class="Digital_twin.UserControls.BackgroundImage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Digital_twin.UserControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="400" d:DesignWidth="500">
+    <Grid Height="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:BackgroundImage}}, Path=GridHeight}" 
+      Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:BackgroundImage}}, Path=GridWidth}" 
+      x:Name="MainGrid"
+          PreviewMouseDown="Image_PreviewMouseDown" 
+               MouseUp="Image_MouseUp" 
+               MouseMove="Image_MouseMove" Background="White">
+        <Image Source="{Binding Image}" Opacity="{Binding ImageOpacity}" Stretch="UniformToFill"
+               Height="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:BackgroundImage}}, Path=ImageHeight}" 
+               Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:BackgroundImage}}, Path=ImageWidth}"/>
+    </Grid>
+</UserControl>

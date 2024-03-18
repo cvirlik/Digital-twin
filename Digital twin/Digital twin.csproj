@@ -98,6 +98,9 @@
     <Compile Include="Dataset\Types\Tertiary\Stairs.cs" />
     <Compile Include="File tools\ImageLoader.cs" />
     <Compile Include="File tools\MergeTools.cs" />
+    <Compile Include="UserControls\BackgroundImage.xaml.cs">
+      <DependentUpon>BackgroundImage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\BrowseImage.xaml.cs">
       <DependentUpon>BrowseImage.xaml</DependentUpon>
     </Compile>
@@ -121,6 +124,12 @@
     </Compile>
     <Compile Include="UserControls\LineCanvas.xaml.cs">
       <DependentUpon>LineCanvas.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Move.xaml.cs">
+      <DependentUpon>Move.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\MoveCanvas.xaml.cs">
+      <DependentUpon>MoveCanvas.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\PointCanvas.xaml.cs">
       <DependentUpon>PointCanvas.xaml</DependentUpon>
@@ -163,6 +172,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UserControls\BackgroundImage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserControls\BrowseImage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -192,6 +205,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\LineCanvas.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\Move.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\MoveCanvas.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -243,6 +264,9 @@
     <Resource Include="Icons\line.png" />
     <Resource Include="Icons\Magnifying_glass.png" />
     <Resource Include="Icons\point.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\Move.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

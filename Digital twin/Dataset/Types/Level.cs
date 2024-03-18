@@ -55,6 +55,6 @@ namespace Digital_twin.Dataset.Types
         }
 
         public int LevelNum { get { return level; } }  
-        public string Name { get { return level.ToString(); } }  
+        public string Name { get { return level.ToString(); } set { level = int.Parse(value); OnPropertyChanged(nameof(Name)); } }  
     }
 }

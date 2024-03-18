@@ -1,5 +1,4 @@
 ﻿using Digital_twin.Dataset;
-using Digital_twin.Dataset.Types.Primary;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,24 +12,25 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using System.Windows.Shapes;
 
 namespace Digital_twin.UserControls
 {
-    public partial class EditCanvas : UserControl
+    /// <summary>
+    /// Interaction logic for Move.xaml
+    /// </summary>
+    public partial class Move : UserControl
     {
-        public static readonly DependencyProperty AngleProperty = DependencyProperty.Register(
-        "Angle", typeof(double), typeof(EditCanvas), new PropertyMetadata(default(double)));
-
-        public double Angle
-        {
-            get { return (double)GetValue(AngleProperty); }
-            set { SetValue(AngleProperty, value); }
-        }
-        public EditCanvas()
+        DataManager dataManager;
+        public Move()
         {
             InitializeComponent();
         }
-
+        private void SetMove(object sender, RoutedEventArgs e)
+        {
+            if (dataManager == null) dataManager = this.DataContext as DataManager;
+            dataManager.State = "Move";
+        }
         
     }
 }

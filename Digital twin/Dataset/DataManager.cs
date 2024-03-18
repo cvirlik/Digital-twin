@@ -32,6 +32,8 @@ namespace Digital_twin.Dataset
         private RelayCommand _addCommand;
         private RelayCommand _removeCommand;
         private RelayCommand _saveCommand;
+        int levelMax;
+        int levelMin;
 
         private string state;
         public string State
@@ -72,6 +74,16 @@ namespace Digital_twin.Dataset
             }
         }
 
+        private double _shapeOpacity = 1.0;
+        public double ShapeOpacity
+        {
+            get => _shapeOpacity;
+            set 
+            { 
+                _shapeOpacity = value;
+                OnPropertyChanged(nameof(ShapeOpacity));
+            }
+        }
         public string CurrentImage
         {
             get { return currentImage; }
@@ -151,8 +163,8 @@ namespace Digital_twin.Dataset
                 Buildings.Add(new Building(Parser.getNodes(Nodes, building.Nodes), building, false));
             }
 
-            int levelMax = Buildings.Max(building => int.Parse(building.MaxLevel));
-            int levelMin = Buildings.Min(building => int.Parse(building.MinLevel));
+            levelMax = Buildings.Max(building => int.Parse(building.MaxLevel));
+            levelMin = Buildings.Min(building => int.Parse(building.MinLevel));
 
 
             for (int i = levelMin; i <= levelMax; i++)
@@ -420,6 +432,77 @@ namespace Digital_twin.Dataset
             SelectedLevel.AddedShapes.Clear();
             SelectedLevel.addedElements.Clear();
             Console.WriteLine("Finish");
+        }
+
+        RelayCommand _addLevelCommand;
+        public RelayCommand AddLevelCommand
+        {
+            get { return _addLevelCommand ?? (_addLevelCommand = new RelayCommand(AddLevel, AddLevelCanExecute)); }
+        }
+        private void AddLevel(object obj)
+        {
+            Level level = new Level(Buildings.Max(building => int.Parse(building.MaxLevel)) + 1);
+            foreach (var building in Buildings)
+            {
+                level.AddObjects(building, true);
+            }
+            Levels.Add(level);
+        }
+        private bool AddLevelCanExecute(object obj)
+        {
+            return readed;
+        }
+
+        RelayCommand _moveLevelUpCommand;
+        public RelayCommand MoveLevelUpCommand
+        {
+            get { return _moveLevelUpCommand ?? (_moveLevelUpCommand = new RelayCommand(MoveLevelUp, MoveLevelUpCanExecute)); }
+        }
+        private void MoveLevelUp(object obj)
+        {
+            if (SelectedLevel != null && Levels.Count > 1)
+            {
+                int currentIndex = Levels.IndexOf(SelectedLevel);
+
+                if (currentIndex > 0)
+                {
+                    string name = Levels[currentIndex - 1].Name;
+                    Levels[currentIndex - 1].Name = SelectedLevel.Name;
+                    SelectedLevel.Name = name;
+                    Level previousItem = Levels[currentIndex - 1];
+                    Levels.Move(currentIndex, currentIndex - 1);
+                }
+            }
+        }
+        private bool MoveLevelUpCanExecute(object obj)
+        {
+            return (SelectedLevel != null) && (SelectedLevel.Name != levelMin.ToString());
+        }
+
+        RelayCommand _moveLevelDownCommand;
+        public RelayCommand MoveLevelDownCommand
+        {
+            get { return _moveLevelDownCommand ?? (_moveLevelDownCommand = new RelayCommand(MoveLevelDown, MoveLevelDownCanExecute)); }
+        }
+        private void MoveLevelDown(object obj)
+        {
+            if (SelectedLevel != null && Levels.Count > 1)
+            {
+                int currentIndex = Levels.IndexOf(SelectedLevel);
+                if (currentIndex < Levels.Count - 1)
+                {
+                    string name = Levels[currentIndex + 1].Name;
+                    Console.WriteLine(Levels[currentIndex + 1].Name);
+                    Levels[currentIndex + 1].Name = SelectedLevel.Name;
+                    Console.WriteLine(Levels[currentIndex + 1].Name);
+                    SelectedLevel.Name = name;
+                    Levels.Move(currentIndex, currentIndex + 1);
+                }
+            }
+        }
+        private bool MoveLevelDownCanExecute(object obj)
+        {
+            return (SelectedLevel != null) && (SelectedLevel.Name != levelMax.ToString());
         }
     }
 }

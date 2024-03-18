@@ -16,16 +16,33 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" MinHeight="400"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
+        
         <local:EditCanvas x:Name="EditCanvasControl" DataContext="{StaticResource Manager}" 
                           Angle="{Binding ElementName=MySlider, Path=Value}" Grid.Row="0">
             <local:EditCanvas.IsHitTestVisible>
                 <MultiBinding Converter="{StaticResource VisibilityToIsHitTestVisibleConverter}">
                     <Binding ElementName="PointCanvasControl" Path="Visibility" />
                     <Binding ElementName="LineCanvasControl" Path="Visibility" />
+                    <Binding ElementName="MoveCanvasControl" Path="Visibility" />
                 </MultiBinding>
             </local:EditCanvas.IsHitTestVisible>
         </local:EditCanvas>
+        <local:BackgroundImage DataContext="{StaticResource Manager}"/>
+
+        <local:MoveCanvas x:Name="MoveCanvasControl" DataContext="{StaticResource Manager}" Angle="{Binding ElementName=MySlider, Path=Value}" Grid.Row="0">
+            <local:MoveCanvas.Style>
+                <Style TargetType="{x:Type local:MoveCanvas}">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Source={StaticResource Manager}, Path=State}" Value="Move">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </local:MoveCanvas.Style>
+        </local:MoveCanvas>
 
 
         <local:PointCanvas x:Name="PointCanvasControl" DataContext="{StaticResource Manager}" Angle="{Binding ElementName=MySlider, Path=Value}" Grid.Row="0">
@@ -61,5 +78,7 @@
             <TextBox Text="{Binding ElementName=MySlider, Path=Value, UpdateSourceTrigger=PropertyChanged}"
                      Width="50" VerticalAlignment="Center" Margin="10"/>
         </StackPanel>
+        <Slider Grid.Row="2" Minimum="0.0" Maximum="1.0" Width="340" VerticalAlignment="Center" Value="{Binding Path=ShapeOpacity}"/>
+
     </Grid>
 </UserControl>
