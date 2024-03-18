@@ -56,7 +56,7 @@ namespace Digital_twin.UserControls
                 int sign = currentCenterDiff > initialCenterDiff ? 1 : -1;
 
                 ImageWidth = Math.Max(10, Math.Min(ImageWidth + changeX * sign, GridWidth));
-                ImageHeight = Math.Max(10, Math.Min(ImageHeight + changeY * sign, GridHeight))
+                ImageHeight = Math.Max(10, Math.Min(ImageHeight + changeY * sign, GridHeight));
             }
         }
 

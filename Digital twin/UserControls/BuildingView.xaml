@@ -18,7 +18,8 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        
+        <local:BackgroundImage DataContext="{StaticResource Manager}"/>
+
         <local:EditCanvas x:Name="EditCanvasControl" DataContext="{StaticResource Manager}" 
                           Angle="{Binding ElementName=MySlider, Path=Value}" Grid.Row="0">
             <local:EditCanvas.IsHitTestVisible>
@@ -26,11 +27,11 @@
                     <Binding ElementName="PointCanvasControl" Path="Visibility" />
                     <Binding ElementName="LineCanvasControl" Path="Visibility" />
                     <Binding ElementName="MoveCanvasControl" Path="Visibility" />
+                    <Binding Source="{StaticResource Manager}" Path="State" />
                 </MultiBinding>
             </local:EditCanvas.IsHitTestVisible>
         </local:EditCanvas>
-        <local:BackgroundImage DataContext="{StaticResource Manager}"/>
-
+        
         <local:MoveCanvas x:Name="MoveCanvasControl" DataContext="{StaticResource Manager}" Angle="{Binding ElementName=MySlider, Path=Value}" Grid.Row="0">
             <local:MoveCanvas.Style>
                 <Style TargetType="{x:Type local:MoveCanvas}">

@@ -122,6 +122,9 @@
     <Compile Include="UserControls\ImageControl.xaml.cs">
       <DependentUpon>ImageControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\ImageTransform.xaml.cs">
+      <DependentUpon>ImageTransform.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\LineCanvas.xaml.cs">
       <DependentUpon>LineCanvas.xaml</DependentUpon>
     </Compile>
@@ -204,6 +207,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UserControls\ImageTransform.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserControls\LineCanvas.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -267,6 +274,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\Move.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\resize.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

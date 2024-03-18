@@ -13,10 +13,18 @@ namespace Digital_twin.Dataset.Support
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (values.Cast<Visibility>().Any(visibility => visibility == Visibility.Visible))
+            var state = values.Last() as string;
+
+            if (state == "ImageTransform")
             {
                 return false;
             }
+
+            if (values.Take(values.Length - 1).Cast<Visibility>().Any(visibility => visibility == Visibility.Visible))
+            {
+                return false;
+            }
+
             return true;
         }
 

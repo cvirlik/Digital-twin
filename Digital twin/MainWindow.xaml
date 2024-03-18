@@ -43,6 +43,7 @@
                     <StackPanel Grid.Column="0">
                         <userControls:BrowseImage  FileName="{Binding CurrentImage, Mode=TwoWay}"/>
                         <userControls:ImageControl EnableCommand="{Binding ChangeOpacityCommand}"/>
+                        <userControls:ImageTransform DataContext="{StaticResource Manager}"/>
                         <userControls:Edit DataContext="{StaticResource Manager}"/>
                         <userControls:Move DataContext="{StaticResource Manager}"/>
                         <userControls:DrawPoint DataContext="{StaticResource Manager}"/>
