@@ -279,5 +279,8 @@
   <ItemGroup>
     <Resource Include="Icons\resize.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\Browse image.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

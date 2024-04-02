@@ -23,8 +23,8 @@
           PreviewMouseDown="Image_PreviewMouseDown" 
           MouseLeave="MainGrid_MouseLeave"
           MouseUp="Image_MouseUp" 
-          MouseMove="Image_MouseMove" Background="White"  >
-        <Image x:Name="MainImage" Source="{Binding Image}" Opacity="{Binding ImageOpacity}" Stretch="UniformToFill"
+          MouseMove="Image_MouseMove" Background="Red"  >
+        <Image x:Name="MainImage" Source="{Binding Image}" Opacity="{Binding ImageOpacity}"
                Height="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:BackgroundImage}}, Path=ImageHeight}" 
                Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:BackgroundImage}}, Path=ImageWidth}">
             <Image.RenderTransform>

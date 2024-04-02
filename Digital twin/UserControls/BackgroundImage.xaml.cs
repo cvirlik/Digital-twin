@@ -67,10 +67,10 @@ namespace Digital_twin.UserControls
 
 
                 int sign = currentCenterDiff > initialCenterDiff ? 1 : -1;
-                double limit = Math.Min(GridWidth, GridHeight);
+                //double limit = Math.Min(GridWidth, GridHeight);
 
-                ImageWidth = Math.Min(limit, _startSize.X + changeX * sign);
-                ImageHeight = Math.Min(limit, _startSize.Y + changeY * sign);
+                ImageWidth = Math.Min(GridWidth, _startSize.X + changeX * sign);
+                ImageHeight = Math.Min(GridHeight, _startSize.Y + changeY * sign);
             }
             if (_isResizing && Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
             {
