@@ -90,6 +90,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Dataset\Support\ObservableCollectionToPointCollectionConverter.cs" />
     <Compile Include="Dataset\Support\VisibilityToIsHitTestVisibleConverter.cs" />
     <Compile Include="Dataset\Types\Canvas\ClosedWayObject.cs" />
     <Compile Include="Dataset\Types\Canvas\NodeObject.cs" />

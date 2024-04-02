@@ -41,5 +41,6 @@ namespace Digital_twin.Dataset.Types.Canvas
         public Way Way { get { return way; } }
         public ObservableCollection<Node> Nodes { get { return nodes; } }
         public ObservableCollection<Segment> Walls { get { return walls; } }
+        public Polygon Polygon { get { return innerFill; }}
     }
 }

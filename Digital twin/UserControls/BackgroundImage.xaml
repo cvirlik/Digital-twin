@@ -6,14 +6,41 @@
              xmlns:local="clr-namespace:Digital_twin.UserControls"
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="500">
+    <UserControl.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Visibility" Value="Collapsed" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Source={StaticResource Manager}, Path=State}" Value="ImageTransform">
+                    <Setter Property="Visibility" Value="Visible" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+    
     <Grid Height="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:BackgroundImage}}, Path=GridHeight}" 
       Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:BackgroundImage}}, Path=GridWidth}" 
       x:Name="MainGrid" ClipToBounds="True"
           PreviewMouseDown="Image_PreviewMouseDown" 
-               MouseUp="Image_MouseUp" 
-               MouseMove="Image_MouseMove" Background="White">
+          MouseLeave="MainGrid_MouseLeave"
+          MouseUp="Image_MouseUp" 
+          MouseMove="Image_MouseMove" Background="White"  >
         <Image x:Name="MainImage" Source="{Binding Image}" Opacity="{Binding ImageOpacity}" Stretch="UniformToFill"
                Height="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:BackgroundImage}}, Path=ImageHeight}" 
-               Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:BackgroundImage}}, Path=ImageWidth}"/>
+               Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:BackgroundImage}}, Path=ImageWidth}">
+            <Image.RenderTransform>
+                <RotateTransform Angle="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:BackgroundImage}}, Path=Angle}" 
+                                 CenterX="225" CenterY="200"/>
+            </Image.RenderTransform>
+        </Image>
+        <Button Height="20" Width="20" Content="?" 
+                HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10">
+            <Button.ToolTip>
+                <TextBlock TextWrapping="NoWrap">
+                    Click + Alt to scale<LineBreak/>
+                    Click + Ctrl to move <LineBreak/>
+                    Click + R to rotate
+                </TextBlock>
+            </Button.ToolTip>
+        </Button>
     </Grid>
 </UserControl>

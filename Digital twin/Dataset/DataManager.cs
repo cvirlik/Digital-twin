@@ -125,7 +125,7 @@ namespace Digital_twin.Dataset
             Ways.Clear();
             Relations.Clear();
             ReaderOSM.ReadOSM(filename, Nodes, Ways, Relations);
-            var result = Parser.getBuildings(Ways);
+            var result = Parser.getBuildings(Ways, Relations);
             readed = true;
             // TEMP SOLUTION
             // TODO: Fix it
@@ -398,6 +398,7 @@ namespace Digital_twin.Dataset
                 {
                     Node previousPoint = ((OpenedWayObject)currentActiveObject).Nodes.Last();
                     Segment addedSegment = new Segment(previousX, previousY, previousPoint, X, Y, n, true);
+                    addedSegment.obj = currentActiveObject;
                     ((OpenedWayObject)currentActiveObject).UpdateSegments(addedSegment);
                     ((OpenedWayObject)currentActiveObject).Nodes.Add(n);
 
@@ -441,7 +442,8 @@ namespace Digital_twin.Dataset
         }
         private void AddLevel(object obj)
         {
-            Level level = new Level(Buildings.Max(building => int.Parse(building.MaxLevel)) + 1);
+            Level level = new Level(levelMax + 1);
+            levelMax++;
             foreach (var building in Buildings)
             {
                 level.AddObjects(building, true);

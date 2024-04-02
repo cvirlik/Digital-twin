@@ -9,14 +9,28 @@ namespace Digital_twin.Dataset.Types.Secondary
     public class Polygon : ViewModelBase, IShape
     {
         public List<Point> vertices { get; set; }
-        public PointCollection Vertices { get; set; }
+
+        private ObservableCollection<System.Windows.Point> _vertices;
+        public ObservableCollection<System.Windows.Point> Vertices
+        {
+            get { return _vertices; }
+            set
+            {
+                _vertices = value;
+                OnPropertyChanged(nameof(Vertices));
+            }
+        }
+        public void UpdateVertices()
+        {
+            OnPropertyChanged(nameof(Vertices));
+        }
         public bool IsInner { get; set; }
         private bool _isSelected;
 
         public Polygon(bool isInner)
         {
             vertices = new List<Point>();
-            Vertices = new PointCollection();
+            Vertices = new ObservableCollection<System.Windows.Point>();
             IsInner = isInner;
         }
         

@@ -2,20 +2,13 @@
 using Digital_twin.Dataset;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Collections.ObjectModel;
 using Digital_twin.Dataset.Support;
+using Digital_twin.Dataset.Types.Canvas;
+using Digital_twin.Dataset.Types.Secondary;
 
 namespace Digital_twin.UserControls
 {
@@ -75,17 +68,22 @@ namespace Digital_twin.UserControls
             }
             addedControlPoints = false;
         }
+
+        private CanvasObject obj;
+        private Segment lastSegment;
         private void Canvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (dataManager == null) dataManager = this.DataContext as DataManager;
             UpdateEditingItem(sender, e);
             DropControlPoints();
-            if (editingShape is Dataset.Types.Secondary.Segment segment)
+            if (editingShape is Segment segment)
             {
                 addedControlPoints = true;
+                obj = segment.obj;
+                lastSegment = segment;
                 dataManager.SelectedLevel.Shapes.Add(segment.Point1);
                 dataManager.SelectedLevel.Shapes.Add(segment.Point2);
-            }
+            } 
             isDragging = true;
             e.Handled = true;
 
@@ -104,6 +102,12 @@ namespace Digital_twin.UserControls
             editingShape = null;
         }
 
+        private bool ComparePoints(Dataset.Types.Primary.Point point1, Dataset.Types.Primary.Point point2)
+        {
+            if((int)point1.X == (int)point2.X && (int)point1.Y == (int)point2.Y) return true;
+            return false;
+        }
+
         private void Canvas_MouseMove(object sender, MouseEventArgs e)
         {
             if (isDragging)
@@ -111,6 +115,45 @@ namespace Digital_twin.UserControls
                 if (editingShape is Dataset.Types.Primary.Point point)
                 {
                     var position = e.GetPosition(CanvasListBox);
+                    if(obj != null)
+                    {
+                        List<Segment> segmentsToUpdate1 = new List<Segment>();
+                        List<Segment> segmentsToUpdate2 = new List<Segment>();
+                        foreach( var item in obj.Shapes)
+                        {
+                            if(item is Segment)
+                            {
+                                if (ComparePoints(((Segment)item).Point1, point))
+                                {
+                                    segmentsToUpdate1.Add((Segment)item);
+                                } else if (ComparePoints(((Segment)item).Point2, point))
+                                {
+                                    segmentsToUpdate2.Add((Segment)item);
+                                }
+                            }
+                        }
+                        if(obj is ClosedWayObject closed)
+                        {
+                            for (int i = 0; i < closed.Polygon.Vertices.Count; i++)
+                            {
+                                if ((int)closed.Polygon.Vertices[i].X == (int)point.X && (int)closed.Polygon.Vertices[i].Y == (int)point.Y)
+                                {
+                                    closed.Polygon.Vertices[i] = new System.Windows.Point(position.X - 5, position.Y - 5);
+                                    closed.Polygon.UpdateVertices();
+                                }
+                            }
+                        }
+                        foreach(Segment segment in segmentsToUpdate1)
+                        {
+                            segment.Point1.X = position.X - 5;
+                            segment.Point1.Y = position.Y - 5;
+                        }
+                        foreach (Segment segment in segmentsToUpdate2)
+                        {
+                            segment.Point2.X = position.X - 5;
+                            segment.Point2.Y = position.Y - 5;
+                        }
+                    }
                     point.X = position.X - 5;
                     point.Y = position.Y - 5;
                 }

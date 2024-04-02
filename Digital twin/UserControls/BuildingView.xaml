@@ -18,7 +18,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <local:BackgroundImage DataContext="{StaticResource Manager}"/>
+        <local:BackgroundImage DataContext="{StaticResource Manager}" Angle="{Binding ElementName=MySlider, Path=Value}"/>
 
         <local:EditCanvas x:Name="EditCanvasControl" DataContext="{StaticResource Manager}" 
                           Angle="{Binding ElementName=MySlider, Path=Value}" Grid.Row="0">
@@ -71,15 +71,19 @@
                 </Style>
             </local:LineCanvas.Style>
         </local:LineCanvas>
-        
-        <StackPanel Orientation="Horizontal" Grid.Row="1">
-            <Label Content="Angle" VerticalAlignment="Center" Margin="10"/>
-            <Slider x:Name="MySlider" Minimum="0" Maximum="360" Width="340" VerticalAlignment="Center">
-            </Slider>
-            <TextBox Text="{Binding ElementName=MySlider, Path=Value, UpdateSourceTrigger=PropertyChanged}"
-                     Width="50" VerticalAlignment="Center" Margin="10"/>
+        <StackPanel Orientation="Vertical" Grid.Row="1">
+            <StackPanel Orientation="Horizontal" >
+                <Label Content="Angle" VerticalAlignment="Center" Margin="10"/>
+                <Slider x:Name="MySlider" Minimum="0" Maximum="360" Width="340" VerticalAlignment="Center">
+                </Slider>
+                <TextBox Text="{Binding ElementName=MySlider, Path=Value, UpdateSourceTrigger=PropertyChanged}"
+                         Width="50" VerticalAlignment="Center" Margin="10"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" >
+                <Label Content="Opasity" VerticalAlignment="Center" Margin="10"/>
+                <Slider Grid.Row="2" Minimum="0.0" Maximum="1.0" Width="340" VerticalAlignment="Center" Value="{Binding Path=ShapeOpacity}"/>
+            </StackPanel>
         </StackPanel>
-        <Slider Grid.Row="2" Minimum="0.0" Maximum="1.0" Width="340" VerticalAlignment="Center" Value="{Binding Path=ShapeOpacity}"/>
 
     </Grid>
 </UserControl>

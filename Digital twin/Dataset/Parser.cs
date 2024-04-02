@@ -21,7 +21,7 @@ namespace Digital_twin.Dataset
             }
             return OSMNodes;
         }
-        public static ObservableCollection<Way> getBuildings(ObservableCollection<Way> Ways)
+        public static ObservableCollection<Way> getBuildings(ObservableCollection<Way> Ways, ObservableCollection<Relation> Relations)
         {
             ObservableCollection<Way> Buildings = new ObservableCollection<Way>();
             
@@ -30,6 +30,18 @@ namespace Digital_twin.Dataset
                 if (way.Tags != null && way.Tags.ContainsKey("building"))
                 {
                     Buildings.Add(way);
+                }
+            }
+            foreach (Relation relation in Relations)
+            {
+                if (relation.Tags != null && relation.Tags.ContainsKey("building"))
+                {
+                    foreach(RelationMember relationMember in relation.Members)
+                    {
+                        Way w = Ways.FirstOrDefault(i => i.Id == relationMember.Id);
+                        w.Tags = relation.Tags;
+                        Buildings.Add(w);
+                    }
                 }
             }
             return Buildings;

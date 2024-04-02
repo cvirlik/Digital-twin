@@ -11,6 +11,15 @@ namespace Digital_twin.UserControls
 {
     public partial class BackgroundImage : UserControl, INotifyPropertyChanged
     {
+        public static readonly DependencyProperty AngleProperty = DependencyProperty.Register(
+        "Angle", typeof(double), typeof(BackgroundImage), new PropertyMetadata(default(double)));
+
+        public double Angle
+        {
+            get { return (double)GetValue(AngleProperty)+PrimaryAngle; }
+            set { SetValue(AngleProperty, value); }
+        }
+        private double PrimaryAngle;
         public BackgroundImage()
         {
             InitializeComponent();
@@ -21,15 +30,17 @@ namespace Digital_twin.UserControls
         }
 
         private Point _startPoint;
+        private Point _startSize;
         private Point _mouseOffset;
         private double _previousAngle;
 
-        private bool _isResizing;
+        private bool _isResizing = false;
         private double[] ratio = new double[2];
 
         private void Image_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             _startPoint = e.GetPosition(MainGrid);
+            _startSize = new Point(ImageWidth, ImageHeight);
             _mouseOffset = e.GetPosition(MainImage);
             _isResizing = true;
             ratio[0] = ImageWidth <= ImageHeight ? 1 : ImageWidth / ImageHeight;
@@ -41,10 +52,11 @@ namespace Digital_twin.UserControls
             var currentPoint = e.GetPosition(MainGrid);
             if (_isResizing && (Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt)))
             {
-                double diffX = _startPoint.X - currentPoint.X;
-                double diffY = _startPoint.Y - currentPoint.Y;
-                double diff = Math.Abs(Math.Min(diffX, diffY));
-                double change = Math.Sqrt(2 * Math.Pow(diff, 2)) / 100;
+                double diffX = Math.Abs(_startPoint.X - currentPoint.X);
+                double diffY = Math.Abs(_startPoint.Y - currentPoint.Y);
+                double diff = Math.Max(diffX, diffY);
+
+                double change = Math.Sqrt(2 * Math.Pow(diff, 2));
                 double changeX = change * ratio[0];
                 double changeY = change * ratio[1];
 
@@ -55,9 +67,10 @@ namespace Digital_twin.UserControls
 
 
                 int sign = currentCenterDiff > initialCenterDiff ? 1 : -1;
+                double limit = Math.Min(GridWidth, GridHeight);
 
-                ImageWidth = Math.Max(10, Math.Min(ImageWidth + changeX * sign, GridWidth));
-                ImageHeight = Math.Max(10, Math.Min(ImageHeight + changeY * sign, GridHeight));
+                ImageWidth = Math.Min(limit, _startSize.X + changeX * sign);
+                ImageHeight = Math.Min(limit, _startSize.Y + changeY * sign);
             }
             if (_isResizing && Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
             {
@@ -71,8 +84,6 @@ namespace Digital_twin.UserControls
                 var vectorEnd = Point.Subtract(currentPoint, new Point(GridWidth / 2, GridHeight / 2));
 
                 double angle = Vector.AngleBetween(vectorStart, vectorEnd);
-                double scale = 0.01;
-                angle *= scale;
 
                 RotateTransform rotateTransform = MainImage.RenderTransform as RotateTransform;
                 if (rotateTransform != null)
@@ -81,14 +92,20 @@ namespace Digital_twin.UserControls
                 }
                 MainImage.RenderTransformOrigin = new Point(0.5, 0.5);
                 MainImage.RenderTransform = new RotateTransform(angle);
+                //PrimaryAngle = angle;
                 _previousAngle = angle;
+                _startPoint = currentPoint;
             }
         }
 
-        private void Image_MouseUp(object sender, MouseButtonEventArgs e)
+        private void StopResizing()
         {
             _isResizing = false;
             _previousAngle = 0;
+        }
+        private void Image_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            StopResizing();
         }
 
 
@@ -142,6 +159,9 @@ namespace Digital_twin.UserControls
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        
+        private void MainGrid_MouseLeave(object sender, MouseEventArgs e)
+        {
+            StopResizing();
+        }
     }
 }
