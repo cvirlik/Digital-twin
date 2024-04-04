@@ -1,10 +1,10 @@
-﻿<UserControl x:Class="Digital_twin.UserControls.DrawLine"
+﻿<UserControl x:Class="Digital_twin.UserControls.Draw"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Digital_twin.UserControls"
-             mc:Ignorable="d" x:Name="root">
+             mc:Ignorable="d" >
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -13,15 +13,15 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-        <Button Click="Line" Style="{StaticResource Line}">
+        <Button Click="SetDraw" Style="{StaticResource Draw}">
             <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <Image Grid.Row="0" Source="../Icons/Line.png"/>
+                <Image Grid.Row="0" Source="../Icons/cube-solid.png"/>
                 <Label Grid.Row="1"  Padding="-1" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <TextBlock HorizontalAlignment="Center" Text="Add line" TextWrapping="Wrap"/>
+                    <TextBlock HorizontalAlignment="Center" Text="Draw" TextWrapping="Wrap"/>
                 </Label>
             </Grid>
         </Button>

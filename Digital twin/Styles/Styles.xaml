@@ -3,8 +3,74 @@
                     xmlns:template="clr-namespace:Digital_twin"
                     xmlns:userControls="clr-namespace:Digital_twin.UserControls">
 
-    <RotateTransform x:Key="RotateTransform" CenterX="250" 
-                     CenterY="200" 
-                     Angle="{Binding ElementName=MySlider, Path=Value}" />
-
+    <Style x:Key="RoundButtonStyle" TargetType="Button">
+        <Setter Property="Height" Value="78"/>
+        <Setter Property="Width" Value="78"/>
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="2" CornerRadius="5">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding FileReaded}" Value="False">
+                <Setter Property="IsEnabled" Value="False"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding FileReaded}" Value="True">
+                <Setter Property="IsEnabled" Value="True"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style x:Key="Move" TargetType="Button" BasedOn="{StaticResource RoundButtonStyle}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding State}" Value="Move">
+                <Setter Property="Background" Value="Gray"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style x:Key="Line" TargetType="Button" BasedOn="{StaticResource RoundButtonStyle}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding State}" Value="Line">
+                <Setter Property="Background" Value="Gray"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style x:Key="Point" TargetType="Button" BasedOn="{StaticResource RoundButtonStyle}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding State}" Value="Point">
+                <Setter Property="Background" Value="Gray"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style x:Key="ImageTransform" TargetType="Button" BasedOn="{StaticResource RoundButtonStyle}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding State}" Value="ImageTransform">
+                <Setter Property="Background" Value="Gray"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style x:Key="Edit" TargetType="Button" BasedOn="{StaticResource RoundButtonStyle}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding State}" Value="Edit">
+                <Setter Property="Background" Value="Gray"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding FileReaded}" Value="False">
+                <Setter Property="Background" Value="White"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style x:Key="Draw" TargetType="Button" BasedOn="{StaticResource RoundButtonStyle}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding State}" Value="Line">
+                <Setter Property="Background" Value="Gray"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding State}" Value="Point">
+                <Setter Property="Background" Value="Gray"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
 </ResourceDictionary>

@@ -10,6 +10,7 @@
 
     <UserControl.Resources>
         <template:VisibilityToIsHitTestVisibleConverter x:Key="VisibilityToIsHitTestVisibleConverter"/>
+        <template:DecimalToPercentageConverter x:Key="DecimalToPercentageConverter"/>
     </UserControl.Resources>
 
     <Grid>
@@ -18,10 +19,10 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <local:BackgroundImage DataContext="{StaticResource Manager}" Angle="{Binding ElementName=MySlider, Path=Value}"/>
+        <local:BackgroundImage DataContext="{StaticResource Manager}" Angle="{Binding ElementName=AngleSlider, Path=Value}"/>
 
         <local:EditCanvas x:Name="EditCanvasControl" DataContext="{StaticResource Manager}" 
-                          Angle="{Binding ElementName=MySlider, Path=Value}" Grid.Row="0">
+                          Angle="{Binding ElementName=AngleSlider, Path=Value}" Grid.Row="0">
             <local:EditCanvas.IsHitTestVisible>
                 <MultiBinding Converter="{StaticResource VisibilityToIsHitTestVisibleConverter}">
                     <Binding ElementName="PointCanvasControl" Path="Visibility" />
@@ -32,7 +33,7 @@
             </local:EditCanvas.IsHitTestVisible>
         </local:EditCanvas>
         
-        <local:MoveCanvas x:Name="MoveCanvasControl" DataContext="{StaticResource Manager}" Angle="{Binding ElementName=MySlider, Path=Value}" Grid.Row="0">
+        <local:MoveCanvas x:Name="MoveCanvasControl" DataContext="{StaticResource Manager}" Angle="{Binding ElementName=AngleSlider, Path=Value}" Grid.Row="0">
             <local:MoveCanvas.Style>
                 <Style TargetType="{x:Type local:MoveCanvas}">
                     <Setter Property="Visibility" Value="Collapsed" />
@@ -46,7 +47,7 @@
         </local:MoveCanvas>
 
 
-        <local:PointCanvas x:Name="PointCanvasControl" DataContext="{StaticResource Manager}" Angle="{Binding ElementName=MySlider, Path=Value}" Grid.Row="0">
+        <local:PointCanvas x:Name="PointCanvasControl" DataContext="{StaticResource Manager}" Angle="{Binding ElementName=AngleSlider, Path=Value}" Grid.Row="0">
             <local:PointCanvas.Style>
                 <Style TargetType="{x:Type local:PointCanvas}">
                     <Setter Property="Visibility" Value="Collapsed" />
@@ -58,8 +59,8 @@
                 </Style>
             </local:PointCanvas.Style>
         </local:PointCanvas>
-        
-        <local:LineCanvas x:Name="LineCanvasControl" DataContext="{StaticResource Manager}" Angle="{Binding ElementName=MySlider, Path=Value}" Grid.Row="0">
+
+        <local:LineCanvas x:Name="LineCanvasControl" DataContext="{StaticResource Manager}" Angle="{Binding ElementName=AngleSlider, Path=Value}" Grid.Row="0">
             <local:LineCanvas.Style>
                 <Style TargetType="{x:Type local:LineCanvas}">
                     <Setter Property="Visibility" Value="Collapsed" />
@@ -71,19 +72,31 @@
                 </Style>
             </local:LineCanvas.Style>
         </local:LineCanvas>
-        <StackPanel Orientation="Vertical" Grid.Row="1">
-            <StackPanel Orientation="Horizontal" >
-                <Label Content="Angle" VerticalAlignment="Center" Margin="10"/>
-                <Slider x:Name="MySlider" Minimum="0" Maximum="360" Width="340" VerticalAlignment="Center">
+        
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Row="0" Grid.Column="0" Content="Angle" VerticalAlignment="Center" Margin="10"/>
+            <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+                <Slider x:Name="AngleSlider" Minimum="0" Maximum="360" Width="340" VerticalAlignment="Center">
                 </Slider>
-                <TextBox Text="{Binding ElementName=MySlider, Path=Value, UpdateSourceTrigger=PropertyChanged}"
-                         Width="50" VerticalAlignment="Center" Margin="10"/>
+                <Label Width="Auto" VerticalAlignment="Center" Margin="10">
+                    <TextBlock Text="{Binding ElementName=AngleSlider, Path=Value, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:0}°}"/>
+                </Label>
             </StackPanel>
-            <StackPanel Orientation="Horizontal" >
-                <Label Content="Opasity" VerticalAlignment="Center" Margin="10"/>
-                <Slider Grid.Row="2" Minimum="0.0" Maximum="1.0" Width="340" VerticalAlignment="Center" Value="{Binding Path=ShapeOpacity}"/>
+            <Label Grid.Row="1" Grid.Column="0" Content="Opacity" VerticalAlignment="Center" Margin="10"/>
+            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+                <Slider x:Name="OpacitySlider" Grid.Row="2" Minimum="0.0" Maximum="1.0" Width="340" VerticalAlignment="Center" Value="{Binding Path=ShapeOpacity}"/>
+                <Label Content="{Binding ElementName=OpacitySlider, Path=Value, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DecimalToPercentageConverter}}"
+                         Width="Auto" VerticalAlignment="Center" Margin="10"/>
             </StackPanel>
-        </StackPanel>
+        </Grid>
 
     </Grid>
 </UserControl>

@@ -36,6 +36,39 @@ namespace Digital_twin.Dataset
         int levelMin;
 
         private string state;
+        public bool FileReaded
+        {
+            get
+            {
+                return readed;
+            }
+            set
+            {
+                readed = value;
+                OnPropertyChanged(nameof(FileReaded));
+            }
+        }
+        public string CurrentTipText
+        {
+            get
+            {
+                switch (state)
+                {
+                    case "Edit":
+                        return "Click on item to change its properties";
+                    case "Point":
+                        return "Click anywhere on a canvas to draw an element. To close a line, click on its first part. To end line press Enter.";
+                    case "Line":
+                        return "Click anywhere on a canvas to draw an element. To close a line, click on its first part. To end line press Enter.";
+                    case "Move":
+                        return "Select item and use anchors to move it";
+                    case "ImageTransform":
+                        return "Hold Ctrl+click to scale or R+click to rotate, then use Alt+click to move.";
+                    default:
+                        return "Click `Browse OSM file to select file to work with.";
+                }
+            }
+        }
         public string State
         {
             get { return state; }
@@ -56,6 +89,7 @@ namespace Digital_twin.Dataset
                 startPoint = null;
                 Console.WriteLine("Current state: " + state);
                 OnPropertyChanged("State");
+                OnPropertyChanged("CurrentTipText");
             }
         }
 
@@ -115,7 +149,7 @@ namespace Digital_twin.Dataset
         public ObservableCollection<Building> Buildings { get; set; } = new ObservableCollection<Building>();
         public ObservableCollection<Level> Levels { get; set; } = new ObservableCollection<Level>();
 
-        private bool readed = false;
+        private bool readed;
 
         private void ReadOSMFile(string filename)
         {
@@ -126,7 +160,8 @@ namespace Digital_twin.Dataset
             Relations.Clear();
             ReaderOSM.ReadOSM(filename, Nodes, Ways, Relations);
             var result = Parser.getBuildings(Ways, Relations);
-            readed = true;
+            FileReaded = true;
+            State = "Edit";
             // TEMP SOLUTION
             // TODO: Fix it
             ObservableCollection<Node> builldingNodes = new ObservableCollection<Node>();
@@ -213,7 +248,8 @@ namespace Digital_twin.Dataset
 
         public DataManager()
         {
-            State = "Edit";
+            FileReaded = false;
+            State = "Default";
             ChangeOpacityCommand = new RelayCommand(ChangeOpacity);
         }
 
@@ -315,7 +351,7 @@ namespace Digital_twin.Dataset
         }
         private bool AddTagCanExecute(object obj)
         {
-            return !string.IsNullOrWhiteSpace(KeyText) && !string.IsNullOrWhiteSpace(ValueText);
+            return !string.IsNullOrWhiteSpace(KeyText) && !string.IsNullOrWhiteSpace(ValueText) && readed;
         }
 
         public RelayCommand RemoveCommand

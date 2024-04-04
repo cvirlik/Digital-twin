@@ -90,6 +90,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Dataset\Support\DecimalToPercentageConverter.cs" />
     <Compile Include="Dataset\Support\ObservableCollectionToPointCollectionConverter.cs" />
     <Compile Include="Dataset\Support\VisibilityToIsHitTestVisibleConverter.cs" />
     <Compile Include="Dataset\Types\Canvas\ClosedWayObject.cs" />
@@ -107,6 +108,9 @@
     </Compile>
     <Compile Include="UserControls\BuildingView.xaml.cs">
       <DependentUpon>BuildingView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Draw.xaml.cs">
+      <DependentUpon>Draw.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\DrawLine.xaml.cs">
       <DependentUpon>DrawLine.xaml</DependentUpon>
@@ -188,6 +192,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UserControls\Draw.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserControls\DrawLine.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -264,23 +272,26 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\eye_closed.png" />
-  </ItemGroup>
-  <ItemGroup>
+    <Resource Include="Icons\BrowseImage.png" />
     <Resource Include="Icons\Edit.png" />
-    <Resource Include="Icons\eye.png" />
-    <Resource Include="Icons\line.png" />
-    <Resource Include="Icons\Magnifying_glass.png" />
-    <Resource Include="Icons\point.png" />
-  </ItemGroup>
-  <ItemGroup>
+    <Resource Include="Icons\Line.png" />
     <Resource Include="Icons\Move.png" />
+    <Resource Include="Icons\Point.png" />
+    <Resource Include="Icons\Question.png" />
+    <Resource Include="Icons\Transform.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\resize.png" />
+    <Resource Include="Icons\File.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\Browse image.png" />
+    <Resource Include="Icons\cube-solid.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\Plus.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\eye-slash.png" />
+    <Resource Include="Icons\eye.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

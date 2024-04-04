@@ -4,25 +4,40 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Digital_twin.UserControls"
-             mc:Ignorable="d" 
-             d:DesignHeight="50" d:DesignWidth="70" x:Name="root">
+             mc:Ignorable="d"  x:Name="root">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Styles/Styles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
-        <Button HorizontalAlignment="Left" VerticalAlignment="Center" Height="50" Width="70" Click="Enable">
-            <Image>
-                <Image.Style>
-                    <Style TargetType="Image">
-                        <Setter Property="Source" Value="../Icons/eye.png" />
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding ImageOpacity}" Value="0.0">
-                                <Setter Property="Source" Value="../Icons/eye_closed.png"/>
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding ImageOpacity}" Value="1.0">
-                                <Setter Property="Source" Value="../Icons/eye.png"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Image.Style>
-            </Image>
+        <Button Click="Enable" Style="{StaticResource RoundButtonStyle}">
+            <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Image Grid.Row="0">
+                    <Image.Style>
+                        <Style TargetType="Image">
+                            <Setter Property="Source" Value="../Icons/eye.png" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ImageOpacity}" Value="0.0">
+                                    <Setter Property="Source" Value="../Icons/eye-slash.png"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding ImageOpacity}" Value="1.0">
+                                    <Setter Property="Source" Value="../Icons/eye.png"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
+                <Label Grid.Row="1"  Padding="-1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock TextAlignment="Center" Text="Toggle image" TextWrapping="Wrap" LineStackingStrategy="BlockLineHeight" LineHeight="12"/>
+                </Label>
+            </Grid>
         </Button>
     </Grid>
 </UserControl>

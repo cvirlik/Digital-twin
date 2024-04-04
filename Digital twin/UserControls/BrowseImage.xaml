@@ -4,11 +4,26 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Digital_twin.UserControls"
-             mc:Ignorable="d" 
-             d:DesignHeight="50" d:DesignWidth="70" x:Name="root">
+             mc:Ignorable="d" x:Name="root">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Styles/Styles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
-        <Button HorizontalAlignment="Left" VerticalAlignment="Center" Height="50" Width="70" Click="Browse">
-            <Image Source="../Icons/Browse image.png"/>
+        <Button Click="Browse" Style="{StaticResource RoundButtonStyle}">
+            <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Image Grid.Row="0" Source="../Icons/File.png"/>
+                <Label Grid.Row="1"  Padding="-1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock TextAlignment="Center" Text="Browse image" TextWrapping="Wrap" LineStackingStrategy="BlockLineHeight" LineHeight="12"/>
+                </Label>
+            </Grid>
         </Button>
     </Grid>
 </UserControl>

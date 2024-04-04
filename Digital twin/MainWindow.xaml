@@ -6,7 +6,7 @@
         xmlns:template="clr-namespace:Digital_twin.Dataset.Support"
         xmlns:userControls="clr-namespace:Digital_twin.UserControls"
         mc:Ignorable="d"
-        Title="Digital Twin" Height="800" Width="900">
+        Title="Digital Twin" Height="700" Width="900">
 
     <Window.Resources>
         <template:PointToMarginConverter x:Key="PointToMarginConverter"/>
@@ -31,75 +31,143 @@
 
         <userControls:Search Margin="10" FileName="{Binding Filepath, Mode=TwoWay}" Grid.Row="0"></userControls:Search>
 
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="1" Margin="10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto" MinHeight="200"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition Width="Auto" MinWidth="258"/>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="6.5*" MinWidth="258"/>
+                <ColumnDefinition Width="1.7*"/>
             </Grid.ColumnDefinitions>
-
-            <StackPanel Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-
-                    <StackPanel Grid.Column="0">
-                        <userControls:BrowseImage  FileName="{Binding CurrentImage, Mode=TwoWay}"/>
-                        <userControls:ImageControl EnableCommand="{Binding ChangeOpacityCommand}"/>
-                        <userControls:ImageTransform DataContext="{StaticResource Manager}"/>
-                        <userControls:Edit DataContext="{StaticResource Manager}"/>
-                        <userControls:Move DataContext="{StaticResource Manager}"/>
-                        <userControls:DrawPoint DataContext="{StaticResource Manager}"/>
-                        <userControls:DrawLine DataContext="{StaticResource Manager}"/>
-                    </StackPanel>
-
-                    <StackPanel Grid.Column="1">
-                        <userControls:BuildingView DataContext="{StaticResource Manager}"/>
-                    </StackPanel>
-                </Grid>
+            
+            <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Width="Auto" HorizontalAlignment="Center" Margin="0, 0, 0, 10">
+                <userControls:ImageTransform DataContext="{StaticResource Manager}" Margin="0,0,5,0"/>
+                <userControls:Edit DataContext="{StaticResource Manager}" Margin="0,0,5,0"/>
+                <userControls:Move DataContext="{StaticResource Manager}" Margin="0,0,5,0"/>
+                <userControls:Draw DataContext="{StaticResource Manager}" Margin="0,0,5,0"/>
             </StackPanel>
 
-            <StackPanel Grid.Row="0" Grid.Column="1">
+            <Grid Grid.Row="1" Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1.5*"/>
+                    <RowDefinition Height="8.5*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Text="{Binding CurrentTipText}" TextWrapping="Wrap" Margin="0,0,0,10"/>
+                <StackPanel Grid.Row="1" Orientation="Vertical">
+                    <StackPanel.Style>
+                        <Style TargetType="StackPanel">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding State}" Value="Edit">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Style>
+                    <ListView  Name="TagListView" ItemsSource="{Binding SelectedShape.Tags}" Margin="0,0,0,5"
+                            SelectedItem="{Binding SelectedTag}" ScrollViewer.VerticalScrollBarVisibility="Auto" MinHeight="100">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Key" Width="60">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBox Text="{Binding Key, UpdateSourceTrigger=PropertyChanged}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="Value" Width="100">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                    <Grid Margin="0,0,0,5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0" Name="KeyTextBox" Text="{Binding KeyText, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Label  Grid.Column="1" Content=":"/>
+                        <TextBox  Grid.Column="2" Name="ValueTextBox" Text="{Binding ValueText, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Button  Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Center" Height="20" Width="20" 
+                                 Command="{Binding AddCommand}" Margin="2" BorderThickness="1">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="2" CornerRadius="5">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Button.Template>
+                            <Image Source="Icons/Plus.png"/>
+                        </Button>
+                    </Grid>
+                    <Button Content="Delete Tag" Command="{Binding RemoveCommand}" Margin="0,0,0,5"/>
+                </StackPanel>
+                
+                <StackPanel Grid.Row="1">
+                    <StackPanel.Style>
+                        <Style TargetType="StackPanel">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding State}" Value="Line">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding State}" Value="Point">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Style>
+                    <userControls:DrawPoint DataContext="{StaticResource Manager}" Margin="0,0,0,5"/>
+                    <userControls:DrawLine DataContext="{StaticResource Manager}" Margin="0,0,0,5"/>
+                </StackPanel>
+                
+                <StackPanel Grid.Row="1">
+                    <StackPanel.Style>
+                        <Style TargetType="StackPanel">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding State}" Value="ImageTransform">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Style>
+                    <userControls:BrowseImage  FileName="{Binding CurrentImage, Mode=TwoWay}" Margin="0,0,0,5"/>
+                    <userControls:ImageControl EnableCommand="{Binding ChangeOpacityCommand}" Margin="0,0,0,5"/>
+                </StackPanel>
+            </Grid>
+
+            <StackPanel Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <userControls:BuildingView DataContext="{StaticResource Manager}"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Grid.Column="2">
                 <ListBox Name="LevelsListBox" ItemsSource="{Binding Levels}" SelectedItem="{Binding SelectedLevel}"
-                         ItemContainerStyle="{StaticResource HighlightSelectedItemStyle}">
+                         ItemContainerStyle="{StaticResource HighlightSelectedItemStyle}" Margin="0,0,0,5">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Name, StringFormat='Level {0}'}"/>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-                <Button Content="Add new building level" Command="{Binding AddLevelCommand}"></Button>
-                <Button Content="Up" Command="{Binding MoveLevelUpCommand}"></Button>
-                <Button Content="Down" Command="{Binding MoveLevelDownCommand}"></Button>
+                <Button Content="Add new building level" Command="{Binding AddLevelCommand}" Margin="0,0,0,5"/>
+                <Button Content="Up" Command="{Binding MoveLevelUpCommand}" Margin="0,0,0,5"/>
+                <Button Content="Down" Command="{Binding MoveLevelDownCommand}" Margin="0,0,0,5"/>
             </StackPanel>
 
-            <StackPanel Grid.Row="1" Grid.Column="0">
-                <ListView Height="200"  Name="TagListView" ItemsSource="{Binding SelectedShape.Tags}" 
-                  SelectedItem="{Binding SelectedTag}" ScrollViewer.VerticalScrollBarVisibility="Auto">
-                    <ListView.View>
-                        <GridView>
-                            <GridViewColumn Header="Key" DisplayMemberBinding="{Binding Key}" />
-                            <GridViewColumn Header="Value" DisplayMemberBinding="{Binding Value}" />
-                        </GridView>
-                    </ListView.View>
-                </ListView>
+            <StackPanel Grid.Row="2" Grid.Column="0">
                 <Button Content="Save Work" Command="{Binding SaveCommand}" HorizontalAlignment="Left"  
                         VerticalAlignment="Top" Width="118"/>
-            </StackPanel>
-
-
-            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical" Grid.RowSpan="2">
-                <Label Content="Key:"/>
-                <TextBox Name="KeyTextBox" Text="{Binding KeyText, UpdateSourceTrigger=PropertyChanged}"/>
-                <Label Content="Value:"/>
-                <TextBox Name="ValueTextBox" Text="{Binding ValueText, UpdateSourceTrigger=PropertyChanged}"/>
-                <Button Content="Add/Update Tag" Command="{Binding AddCommand}"/>
-                <Button Content="Delete Tag" Command="{Binding RemoveCommand}"/>
             </StackPanel>
         </Grid>
         
