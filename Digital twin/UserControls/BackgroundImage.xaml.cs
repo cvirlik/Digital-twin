@@ -12,12 +12,31 @@ namespace Digital_twin.UserControls
     public partial class BackgroundImage : UserControl, INotifyPropertyChanged
     {
         public static readonly DependencyProperty AngleProperty = DependencyProperty.Register(
-        "Angle", typeof(double), typeof(BackgroundImage), new PropertyMetadata(default(double)));
+         "Angle",
+         typeof(double),
+         typeof(BackgroundImage),
+         new PropertyMetadata(default(double), OnAngleChanged));
 
         public double Angle
         {
-            get { return (double)GetValue(AngleProperty)+PrimaryAngle; }
+            get { return (double)GetValue(AngleProperty); }
             set { SetValue(AngleProperty, value); }
+        }
+
+        private static void OnAngleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var backgroundImage = (BackgroundImage)d;
+            backgroundImage.OnPropertyChanged("FinalRotateAngle");
+        }
+        public double FinalRotateAngle
+        {
+            get {
+                return Angle + PrimaryAngle; }
+            set
+            {
+                PrimaryAngle = value;
+                OnPropertyChanged("FinalRotateAngle");
+            }
         }
         private double PrimaryAngle;
         public BackgroundImage()
@@ -88,11 +107,13 @@ namespace Digital_twin.UserControls
                 RotateTransform rotateTransform = MainImage.RenderTransform as RotateTransform;
                 if (rotateTransform != null)
                 {
-                    angle += rotateTransform.Angle;
+                    angle += rotateTransform.Angle - Angle;
                 }
-                MainImage.RenderTransformOrigin = new Point(0.5, 0.5);
-                MainImage.RenderTransform = new RotateTransform(angle);
-                //PrimaryAngle = angle;
+                //MainImage.RenderTransformOrigin = new Point(0.5, 0.5);
+                //MainImage.RenderTransform = new RotateTransform(angle);
+               
+                FinalRotateAngle = angle;
+               
                 _previousAngle = angle;
                 _startPoint = currentPoint;
             }

@@ -65,7 +65,7 @@ namespace Digital_twin.Dataset
                     case "ImageTransform":
                         return "Hold Ctrl+click to scale or R+click to rotate, then use Alt+click to move.";
                     default:
-                        return "Click `Browse OSM file to select file to work with.";
+                        return "Click `Browse OSM file` to select file to work with.";
                 }
             }
         }
