@@ -23,7 +23,7 @@
                     <Image Grid.Row="0" Source="../Icons/Point.png" Width="10" Height="10" VerticalAlignment="Center"/>
                 </Grid>
                 <Label Grid.Row="1"  Padding="-1" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <TextBlock HorizontalAlignment="Center" Text="Add point" TextWrapping="Wrap"/>
+                    <TextBlock HorizontalAlignment="Center" Text="Add node" TextWrapping="Wrap"/>
                 </Label>
             </Grid>
         </Button>

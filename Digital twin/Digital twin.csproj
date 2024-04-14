@@ -100,6 +100,13 @@
     <Compile Include="Dataset\Types\Tertiary\Stairs.cs" />
     <Compile Include="File tools\ImageLoader.cs" />
     <Compile Include="File tools\MergeTools.cs" />
+    <Compile Include="File tools\SupportingFileTools.cs" />
+    <Compile Include="RelayButtons\AddLevel.cs" />
+    <Compile Include="RelayButtons\AddTag.cs" />
+    <Compile Include="RelayButtons\MoveLevelDown.cs" />
+    <Compile Include="RelayButtons\MoveLevelUp.cs" />
+    <Compile Include="RelayButtons\RemoveTag.cs" />
+    <Compile Include="RelayButtons\SaveComand.cs" />
     <Compile Include="UserControls\BackgroundImage.xaml.cs">
       <DependentUpon>BackgroundImage.xaml</DependentUpon>
     </Compile>

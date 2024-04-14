@@ -1,4 +1,5 @@
 ﻿using Digital_twin.Dataset;
+using Digital_twin.Draw_tools;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -34,13 +35,13 @@ namespace Digital_twin.UserControls
 
             if (pX == startX && pY == startY)
             {
-                dataManager.AddWay(position.X, position.Y, pX, pY, false);
+                DrawingTools.AddWay(position.X, position.Y, pX, pY, false, dataManager);
                 pX = position.X;
                 pY = position.Y;
             }
             else
             {
-                dataManager.AddWay(position.X, position.Y, pX, pY, true);
+                DrawingTools.AddWay(position.X, position.Y, pX, pY, true, dataManager);
                 pX = position.X;
                 pY = position.Y;
             }
@@ -49,7 +50,7 @@ namespace Digital_twin.UserControls
         private void Line_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             Console.WriteLine("Click on closing line");
-            dataManager.CloseWay(pX, pY);
+            DrawingTools.CloseWay(pX, pY, dataManager);
             pX = -1; pY = -1;
             startX = null; startY = null;
         }

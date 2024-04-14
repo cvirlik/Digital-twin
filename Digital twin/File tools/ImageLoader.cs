@@ -12,13 +12,20 @@ namespace Digital_twin.File_tools
     {
         public static BitmapImage LoadImage(string filepath)
         {
-            BitmapImage bitmapImage = new BitmapImage();
+            if (SupportingFileTools.ValidateImageFileType(filepath))
+            {
+                BitmapImage bitmapImage = new BitmapImage();
 
-            bitmapImage.BeginInit();
-            bitmapImage.UriSource = new Uri(filepath); 
-            bitmapImage.EndInit();
+                bitmapImage.BeginInit();
+                bitmapImage.UriSource = new Uri(filepath); 
+                bitmapImage.EndInit();
 
-            return bitmapImage;
+                return bitmapImage;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

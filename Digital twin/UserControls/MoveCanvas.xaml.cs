@@ -147,15 +147,18 @@ namespace Digital_twin.UserControls
                         {
                             segment.Point1.X = position.X - 5;
                             segment.Point1.Y = position.Y - 5;
+                            segment.Point1.UpdateNodeCoordinates();
                         }
                         foreach (Segment segment in segmentsToUpdate2)
                         {
                             segment.Point2.X = position.X - 5;
                             segment.Point2.Y = position.Y - 5;
+                            segment.Point2.UpdateNodeCoordinates();
                         }
                     }
                     point.X = position.X - 5;
                     point.Y = position.Y - 5;
+                    point.UpdateNodeCoordinates();
                 }
             }
         }

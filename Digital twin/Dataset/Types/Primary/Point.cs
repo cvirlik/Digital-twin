@@ -1,4 +1,5 @@
-﻿using Digital_twin.Dataset.Types.Canvas;
+﻿using Digital_twin.Dataset.Support;
+using Digital_twin.Dataset.Types.Canvas;
 using Digital_twin.Dataset.Types.Secondary;
 using OsmSharp;
 using System;
@@ -18,7 +19,8 @@ namespace Digital_twin.Dataset.Types.Primary
             get { return x; }
             set
             {
-                x = value; OnPropertyChanged(nameof(X));
+                x = value; 
+                OnPropertyChanged(nameof(X));
             }
         }
         private double y;
@@ -27,8 +29,15 @@ namespace Digital_twin.Dataset.Types.Primary
             get { return y; }
             set
             {
-                y = value; OnPropertyChanged(nameof(Y));
+                y = value; 
+                OnPropertyChanged(nameof(Y));
             }
+        }
+        public void UpdateNodeCoordinates()
+        {
+            double mx, my;
+            (mx, my) = GpsUtils.CanvasToMeters(x, y);
+            (node.Latitude, node.Longitude) = GpsUtils.MetersToLatLon(mx, my);
         }
         public double Latitude { get; set; }
         public double Longitude { get; set; }

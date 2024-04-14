@@ -55,6 +55,7 @@ namespace Digital_twin.UserControls
 
         private bool _isResizing = false;
         private double[] ratio = new double[2];
+        private TranslateTransform _activeTransform;
 
         private void Image_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -95,7 +96,28 @@ namespace Digital_twin.UserControls
             {
                 double newX = currentPoint.X - ImageWidth / 2;
                 double newY = currentPoint.Y - ImageHeight / 2;
-                MainImage.Margin = new Thickness(newX, newY, 0, 0);
+                if (_activeTransform == null)
+                {
+                    _activeTransform = new TranslateTransform(newX, newY);
+
+                    if (MainImage.RenderTransform is TransformGroup group)
+                    {
+                        group.Children.Add(_activeTransform);
+                    }
+                    else
+                    {
+                        TransformGroup newGroup = new TransformGroup();
+                        newGroup.Children.Add(MainImage.RenderTransform);
+                        newGroup.Children.Add(_activeTransform);
+                        MainImage.RenderTransform = newGroup;
+                    }
+                }
+                else
+                {
+                    // Update the existing TranslateTransform
+                    _activeTransform.X = newX;
+                    _activeTransform.Y = newY;
+                }
             }
             if (_isResizing && Keyboard.IsKeyDown(Key.R))
             {
@@ -104,14 +126,20 @@ namespace Digital_twin.UserControls
 
                 double angle = Vector.AngleBetween(vectorStart, vectorEnd);
 
-                RotateTransform rotateTransform = MainImage.RenderTransform as RotateTransform;
-                if (rotateTransform != null)
+                if (MainImage.RenderTransform is TransformGroup group)
                 {
-                    angle += rotateTransform.Angle - Angle;
+
+                    // Find the RotateTransform in the group
+                    foreach (var child in group.Children)
+                    {
+                        if (child is RotateTransform rotate)
+                        {
+                            angle += rotate.Angle - Angle;
+                            break;
+                        }
+                    }
                 }
-                //MainImage.RenderTransformOrigin = new Point(0.5, 0.5);
-                //MainImage.RenderTransform = new RotateTransform(angle);
-               
+
                 FinalRotateAngle = angle;
                
                 _previousAngle = angle;

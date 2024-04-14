@@ -1,4 +1,5 @@
 ﻿using Digital_twin.Dataset;
+using Digital_twin.Draw_tools;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -24,7 +25,7 @@ namespace Digital_twin.UserControls
         }
         private void DrawPoint(DataManager dataManager, Point position)
         {
-            dataManager.AddNode(position.X, position.Y);
+            DrawingTools.AddNode(position.X, position.Y, dataManager);
         }
         private void Canvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
