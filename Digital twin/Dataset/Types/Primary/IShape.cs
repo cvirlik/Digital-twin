@@ -9,9 +9,20 @@ using System.Threading.Tasks;
 
 namespace Digital_twin.Dataset.Types.Primary
 {
-    public interface IShape
+    public abstract class IShape : ViewModelBase
     {
-        CanvasObject obj { get; set; }
+        public CanvasObject obj { get; set; }
+        private bool _IsObjectSelected = false;
+
+        public bool IsObjectSelected
+        {
+            get { return _IsObjectSelected; }
+            set
+            {
+                _IsObjectSelected = value;
+                OnPropertyChanged(nameof(IsObjectSelected));
+            }
+        }
         //ObservableCollection<Tag> Tags { get; set; }
     }
 }

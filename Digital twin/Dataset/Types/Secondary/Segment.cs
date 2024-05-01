@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Digital_twin.Dataset.Types.Secondary
 {
-    public class Segment : ViewModelBase, IShape
+    public class Segment : IShape
     {
         public Point Point1 { get; set; }
         public Point Point2 { get; set; }
@@ -27,12 +27,13 @@ namespace Digital_twin.Dataset.Types.Secondary
             }
         }
 
+        public Way way { get; set; }
+
         public ObservableCollection<Tag> Tags
         {
             get { return obj.Tags; }
             set { }
         }
-        public CanvasObject obj { get; set; }
 
         public Segment(double x1, double y1, Node node1,
                        double x2, double y2, Node node2, bool isInner)

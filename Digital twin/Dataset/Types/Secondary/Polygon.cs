@@ -6,7 +6,7 @@ using System.Windows.Media;
 
 namespace Digital_twin.Dataset.Types.Secondary
 {
-    public class Polygon : ViewModelBase, IShape
+    public class Polygon : IShape
     {
         public List<Point> vertices { get; set; }
 
@@ -55,7 +55,5 @@ namespace Digital_twin.Dataset.Types.Secondary
                 OnPropertyChanged("IsSelected");
             }
         }
-
-        public CanvasObject obj { get; set; }
     }
 }

@@ -93,6 +93,7 @@ namespace Digital_twin.UserControls
             {
                 pX = -1; pY = -1;
                 startX = null; startY = null;
+                DrawingTools.FinishWay(dataManager);
             }
         }
         private void TheGrid_OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)

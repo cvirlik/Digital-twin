@@ -2,12 +2,14 @@
 using Digital_twin.Dataset.Types;
 using Digital_twin.Dataset.Types.Canvas;
 using Digital_twin.Dataset.Types.Primary;
+using Digital_twin.Dataset.Types.Secondary;
 using Digital_twin.Dataset.Types.Tertiary;
 using Digital_twin.Draw_tools;
 using Digital_twin.File_tools;
 using Digital_twin.RelayButtons;
 using OsmSharp;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
@@ -23,12 +25,50 @@ namespace Digital_twin.Dataset
         public static double maxY = double.MinValue;
         public static double minX = double.MaxValue;
         public static double minY = double.MaxValue;
+        public IdGenerator _idGenerator = new IdGenerator();
+        public ObservableCollection<Tag> _recommendedTags;
+        public ObservableCollection<Tag> RecommendedTags
+        {
+            get { return _recommendedTags; }
+            set
+            {
+                if (_recommendedTags != value)
+                {
+                    _recommendedTags = value;
+                    OnPropertyChanged(nameof(RecommendedTags));
+                }
+            }
+        }
+        public Cursor CurrentCursor
+        {
+            get
+            {
+                switch (State)
+                {
+                    case "Edit":
+                    case "Default":
+                    case "ImageTransform":
+                        return Cursors.Arrow;
+                    case "Point":
+                    case "Line":
+                        return Cursors.Pen;
+                    case "Move":
+                        return Cursors.SizeAll;
+                    default:
+                        return Cursors.Arrow;
+                }
+            }
+        }
 
         public static double maxLatitude;
         public static double minLongitude;
 
         public void SetCanvasVariables(ObservableCollection<Node> builldingNodes)
         {
+            maxX = double.MinValue;
+            maxY = double.MinValue;
+            minX = double.MaxValue;
+            minY = double.MaxValue;
             double x, y;
             foreach (Node node in builldingNodes)
             {
@@ -49,6 +89,7 @@ namespace Digital_twin.Dataset
         public MoveLevelUp MoveLevelUpCommand { get; }
         public AddLevel AddLevelCommand { get; }
         public RelayCommand SaveCommand { get; }
+        public RelayCommand AddRecommendedTag { get; }
 
         public int levelMax;
         public int levelMin;
@@ -102,10 +143,12 @@ namespace Digital_twin.Dataset
                         SelectedLevel.AddedShapes.Clear();
                         SelectedLevel.addedElements.Clear();
                     }
+                    SelectedShape = null;
                 }
                 currentActiveObject = null;
                 startPoint = null;
                 OnPropertyChanged("State");
+                OnPropertyChanged("CurrentCursor");
                 OnPropertyChanged("CurrentTipText");
             }
         }
@@ -189,6 +232,7 @@ namespace Digital_twin.Dataset
             MoveLevelUpCommand = new MoveLevelUp(this);
             AddLevelCommand = new AddLevel(this);
             SaveCommand = new SaveComand(this);
+            AddRecommendedTag = new AddRecommendedTag(this);
         }
 
         private void ChangeOpacity(object obj)
@@ -205,7 +249,6 @@ namespace Digital_twin.Dataset
                     filename = System.IO.Path.GetFileName(value);
                     OnPropertyChanged(nameof(Filepath));
                     ReaderOSM.DataPartitioning(this, value);
-
                 }
             }
         }
@@ -225,13 +268,144 @@ namespace Digital_twin.Dataset
                 return _selectedShape; }
             set
             {
+                if(_selectedShape != null)
+                {
+                    _selectedShape.IsObjectSelected = false;
+                    RecommendedTags = null;
+                }
                 _selectedShape = value;
+                if (_selectedShape != null)
+                {
+                    _selectedShape.IsObjectSelected = true;
+                    if(SelectedShape.obj is OpenedWayObject)
+                    {
+                        Console.WriteLine("Open");
+                        RecommendedTags = new ObservableCollection<Tag>()
+                        {
+                            new Tag("indoor", "pathway")
+                        };
+                    } else if(SelectedShape.obj is ClosedWayObject)
+                    {
+                        Console.WriteLine("Close");
+                        RecommendedTags = new ObservableCollection<Tag>()
+                        {
+                            new Tag("indoor", "room"),
+                            new Tag("indoor", "corridor")
+                        };
+                    }
+                    else if(SelectedShape.obj is NodeObject)
+                    {
+                        Console.WriteLine("Node");
+                        RecommendedTags = new ObservableCollection<Tag>()
+                        {
+                            new Tag("door", "hinged")
+                        };
+                    }
+                    else
+                    {
+                        RecommendedTags = null;
+                    }
+                }
                 OnPropertyChanged(nameof(SelectedShape));
             }
         }
 
-        private Types.Secondary.Tag _selectedTag;
-        public Types.Secondary.Tag SelectedTag
+        public void DeleteElement()
+        {
+            if(SelectedShape != null)
+            {
+                if (SelectedShape is Point point)
+                {
+                    Nodes.Remove(point.node);
+                    SelectedLevel.DeleteObject(point.obj);
+                } 
+                if (SelectedShape is Segment segment)
+                {
+                    List<long> nodes = segment.way.Nodes.ToList();
+                    List<int> indices = nodes.Select((b, i) => b == (long)segment.Point1.node.Id ? i : -1).Where(i => i != -1).ToList();
+                    if(segment.obj is ClosedWayObject)
+                    {
+                        List<long> newWayObject;
+                        foreach (int i in indices)
+                        {
+                            if (nodes[i + 1] == (long)segment.Point2.node.Id)
+                            {
+                                List<long> firstPart = nodes.Take(i+1).ToList();
+                                List<long> secondPart = nodes.Skip(i+1).ToList();
+
+                                firstPart.Reverse();
+                                secondPart.Reverse();
+
+                                if (secondPart.Count > 0 && firstPart.Count > 0 && secondPart[0] == firstPart[firstPart.Count - 1])
+                                {
+                                    secondPart.RemoveAt(0);
+                                }
+
+
+                                newWayObject = firstPart.Concat(secondPart).ToList();
+                                segment.way.Nodes = newWayObject.ToArray();
+                                OpenedWayObject openedWayObject =
+                                    new OpenedWayObject(Parser.getNodes(Nodes, newWayObject.ToArray()), segment.way, segment.IsInner);
+
+                                SelectedLevel.DeleteObject(segment.obj);
+                                SelectedLevel.AddObjects(openedWayObject, true);
+                                break;
+                            }
+                        }
+                        
+                    }
+                    if (segment.obj is OpenedWayObject openedWay)
+                    {
+                        foreach (int i in indices)
+                        {
+                            if (nodes[i + 1] == (long)segment.Point2.node.Id)
+                            {
+                                if(i == 0){
+                                    nodes.RemoveAt(0);
+                                } else if (i + 1 == nodes.Count() - 1){
+                                    nodes.RemoveAt(i+1);
+                                }
+                                else
+                                {
+                                    List<long> firstPart = nodes.GetRange(0, i + 1);
+                                    List<long> secondPart = nodes.GetRange(i + 1, nodes.Count - (i + 1));
+
+                                    Way firstWay = new Way();
+                                    firstWay.Id = _idGenerator.GenerateIdWay();
+                                    firstWay.Nodes = firstPart.ToArray();
+                                    firstWay.Tags = segment.way.Tags;
+
+                                    OpenedWayObject firstOpenedWayObject =
+                                    new OpenedWayObject(Parser.getNodes(Nodes, firstWay.Nodes), firstWay, segment.IsInner);
+
+                                    Way secondWay = new Way();
+                                    secondWay.Id = _idGenerator.GenerateIdWay();
+                                    secondWay.Nodes = secondPart.ToArray();
+                                    secondWay.Tags = segment.way.Tags;
+
+                                    OpenedWayObject secondOpenedWayObject =
+                                    new OpenedWayObject(Parser.getNodes(Nodes, secondWay.Nodes), secondWay, segment.IsInner);
+                                    SelectedLevel.DeleteObject(openedWay);
+                                    SelectedLevel.AddObjects(firstOpenedWayObject, true);
+                                    SelectedLevel.AddObjects(secondOpenedWayObject, true);
+                                    break;
+                                }
+                                SelectedLevel.DeleteObject(openedWay);
+                                openedWay.Way.Nodes = nodes.ToArray();
+                                openedWay.ReloadSegments(Parser.getNodes(Nodes, openedWay.Way.Nodes));
+                                SelectedLevel.AddObjects(openedWay, true);
+                                break;
+                            }
+                        }
+
+                    }
+                }
+            }
+            SelectedShape = null;
+        }
+
+        private Tag _selectedTag;
+        public Tag SelectedTag
         {
             get { return _selectedTag; }
             set
@@ -245,7 +419,18 @@ namespace Digital_twin.Dataset
                 OnPropertyChanged(nameof(SelectedTag));
             }
         }
-        
+
+        private Tag _selectedRecommendedTag;
+        public Tag SelectedRecommendedTag
+        {
+            get { return _selectedRecommendedTag; }
+            set
+            {
+                _selectedRecommendedTag = value;
+                OnPropertyChanged(nameof(SelectedRecommendedTag));
+            }
+        }
+
         public string KeyText
         {
             get { return _keyText; }

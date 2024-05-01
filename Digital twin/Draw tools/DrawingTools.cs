@@ -8,6 +8,7 @@ using Digital_twin.Dataset.Types.Canvas;
 using Digital_twin.Dataset;
 using System.Linq;
 using OsmSharp.Tags;
+using System.Collections.Generic;
 
 namespace Digital_twin.Draw_tools
 {
@@ -39,7 +40,7 @@ namespace Digital_twin.Draw_tools
         }
         public static void SplitToSegments(ObservableCollection<Node> nodes, 
                                            ObservableCollection<Segment> segments,
-                                           bool isInner)
+                                           bool isInner, Way way)
         { 
             double previousX = -1;
             double previousY = -1;
@@ -56,7 +57,9 @@ namespace Digital_twin.Draw_tools
                 (cx, cy) = GpsUtils.MetersToCanvas(x, y);
                 if (previousX != -1 && previousY != -1)
                 {
-                    segments.Add(new Segment(previousX, previousY, previousNode, cx, cy, node, isInner));
+                    Segment s = new Segment(previousX, previousY, previousNode, cx, cy, node, isInner);
+                    s.way = way;
+                    segments.Add(s);
                 }
                 previousX = cx; previousY = cy; previousNode = node;
             }
@@ -86,11 +89,16 @@ namespace Digital_twin.Draw_tools
         public static void AddNode(double X, double Y, DataManager dataManager)
         {
             Node n = new Node();
+            n.Id = dataManager._idGenerator.GenerateIdNode();
             (X, Y) = GpsUtils.CanvasToMeters(X, Y);
             (n.Latitude, n.Longitude) = GpsUtils.MetersToLatLon(X, Y);
-            n.Tags = new TagsCollection();
+            n.Tags = new TagsCollection()
+            {
+                new OsmSharp.Tags.Tag("level", dataManager.SelectedLevel.Name)
+            };
             NodeObject nodeObject = new NodeObject(n);
             dataManager.SelectedLevel.AddObjects(nodeObject, true);
+            dataManager.Nodes.Add(n);
         }
 
         
@@ -99,10 +107,12 @@ namespace Digital_twin.Draw_tools
         {
             // Create new control point
             Node n = new Node();
+            n.Id = dataManager._idGenerator.GenerateIdNode();
             (X, Y) = GpsUtils.CanvasToMeters(X, Y);
             (n.Latitude, n.Longitude) = GpsUtils.MetersToLatLon(X, Y);
             n.Tags = new TagsCollection();
             (X, Y) = GpsUtils.MetersToCanvas(X, Y);
+            dataManager.Nodes.Add(n);
 
 
             if (previousX == -1 && previousY == -1) // If it start control point -- create placeholder NodeObject
@@ -123,9 +133,21 @@ namespace Digital_twin.Draw_tools
                     {
                         dataManager.startPoint, n
                     };
-                    //TODO: add nodes?
+
                     Way way = new Way();
-                    way.Tags = new TagsCollection();
+                    way.Id = dataManager._idGenerator.GenerateIdWay();
+                    way.Tags = new TagsCollection
+                    {
+                        new OsmSharp.Tags.Tag("level", dataManager.SelectedLevel.Name)
+                    };
+                    dataManager.Ways.Add(way); 
+                    List<long> nodes = new List<long>
+                    {
+                        (long)dataManager.startPoint.Id,
+                        (long)n.Id
+                    };
+
+                    way.Nodes = nodes.ToArray();
                     dataManager.currentActiveObject = new OpenedWayObject(_nodes, way, true);
                     foreach (IShape segment in dataManager.currentActiveObject.Shapes)
                     {
@@ -136,32 +158,45 @@ namespace Digital_twin.Draw_tools
                 {
                     Node previousPoint = ((OpenedWayObject)dataManager.currentActiveObject).Nodes.Last();
                     Segment addedSegment = new Segment(previousX, previousY, previousPoint, X, Y, n, true);
+                    addedSegment.way = ((OpenedWayObject)dataManager.currentActiveObject).Way;
                     addedSegment.obj = dataManager.currentActiveObject;
                     ((OpenedWayObject)dataManager.currentActiveObject).UpdateSegments(addedSegment);
                     ((OpenedWayObject)dataManager.currentActiveObject).Nodes.Add(n);
+                    List<long> nodes = ((OpenedWayObject)dataManager.currentActiveObject).Way.Nodes.ToList();
+                    nodes.Add((long)n.Id);
+                    ((OpenedWayObject)dataManager.currentActiveObject).Way.Nodes = nodes.ToArray();
 
                     dataManager.SelectedLevel.AddedShapes.Add(addedSegment);
                 }
             }
 
         }
+
+        public static void FinishWay(DataManager dataManager)
+        {
+            dataManager.SelectedLevel.AddObjects(dataManager.currentActiveObject, true);
+            dataManager.currentActiveObject = null;
+            dataManager.startPoint = null;
+            dataManager.SelectedLevel.AddedShapes.Clear();
+            dataManager.SelectedLevel.addedElements.Clear();
+        }
         public static void CloseWay(double X, double Y, DataManager dataManager)
         {
-            Node n = new Node();
-            (X, Y) = GpsUtils.CanvasToMeters(X, Y);
-            (n.Latitude, n.Longitude) = GpsUtils.MetersToLatLon(X, Y);
-            n.Tags = new TagsCollection();
-            (X, Y) = GpsUtils.MetersToCanvas(X, Y);
+            Node n = ((OpenedWayObject)dataManager.currentActiveObject).Nodes.Last();
 
             double sx, sy;
             (sx, sy) = GpsUtils.LatLonToMeters((double)dataManager.startPoint.Latitude, (double)dataManager.startPoint.Longitude);
             (sx, sy) = GpsUtils.MetersToCanvas(sx, sy);
 
             Segment addedSegment = new Segment(sx, sy, dataManager.startPoint, X, Y, n, true);
+            addedSegment.way = ((OpenedWayObject)dataManager.currentActiveObject).Way;
+            addedSegment.obj = dataManager.currentActiveObject;
             ((OpenedWayObject)dataManager.currentActiveObject).Segments.Add(addedSegment);
-            ((OpenedWayObject)dataManager.currentActiveObject).Nodes.Add(n);
             ((OpenedWayObject)dataManager.currentActiveObject).Nodes.Add(dataManager.startPoint);
 
+            List<long> nodes = ((OpenedWayObject)dataManager.currentActiveObject).Way.Nodes.ToList();
+            nodes.Add((long)dataManager.startPoint.Id);
+            ((OpenedWayObject)dataManager.currentActiveObject).Way.Nodes = nodes.ToArray();
 
             ClosedWayObject closedWayObject = new ClosedWayObject(((OpenedWayObject)dataManager.currentActiveObject).Nodes,
                 ((OpenedWayObject)dataManager.currentActiveObject).Way, true);

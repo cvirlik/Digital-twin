@@ -10,6 +10,9 @@ namespace Digital_twin.Dataset.Types.Secondary
     {
         private string _key;
         private string _value;
+        public Tag(string k, string v) { 
+            Key = k; Value = v;
+        }          
         public string Key { 
             get { return _key; } 
             set

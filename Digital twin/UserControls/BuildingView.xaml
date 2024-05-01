@@ -82,7 +82,7 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <Label Grid.Row="0" Grid.Column="0" Content="Angle" VerticalAlignment="Center" Margin="10"/>
+            <Label Grid.Row="0" Grid.Column="0" Content="Rotate Canvas" VerticalAlignment="Center" Margin="10"/>
             <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
                 <Slider x:Name="AngleSlider" Minimum="0" Maximum="360" Width="340" VerticalAlignment="Center">
                 </Slider>
@@ -90,7 +90,7 @@
                     <TextBlock Text="{Binding ElementName=AngleSlider, Path=Value, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:0}°}"/>
                 </Label>
             </StackPanel>
-            <Label Grid.Row="1" Grid.Column="0" Content="Opacity" VerticalAlignment="Center" Margin="10"/>
+            <Label Grid.Row="1" Grid.Column="0" Content="Fill Opacity" VerticalAlignment="Center" Margin="10"/>
             <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
                 <Slider x:Name="OpacitySlider" Grid.Row="2" Minimum="0.0" Maximum="1.0" Width="340" VerticalAlignment="Center" Value="{Binding Path=ShapeOpacity}"/>
                 <Label Content="{Binding ElementName=OpacitySlider, Path=Value, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DecimalToPercentageConverter}}"

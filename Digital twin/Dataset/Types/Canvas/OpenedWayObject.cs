@@ -3,7 +3,6 @@ using Digital_twin.Dataset.Types.Secondary;
 using Digital_twin.Draw_tools;
 using System.Collections.ObjectModel;
 using OsmSharp;
-using System.ServiceModel.PeerResolvers;
 
 namespace Digital_twin.Dataset.Types.Canvas
 {
@@ -13,7 +12,8 @@ namespace Digital_twin.Dataset.Types.Canvas
         // OSM DATA
         protected ObservableCollection<Node> nodes { get; set; }
         protected Way way { get; set; }
-
+        private bool _isInner;
+        
 
         // POST-OSM DATA
         protected ObservableCollection<Segment> segments { get; set; } = new ObservableCollection<Segment>();
@@ -23,10 +23,11 @@ namespace Digital_twin.Dataset.Types.Canvas
             way = _way;
             foreach (var tag in way.Tags)
             {
-                Tags.Add(new Tag { Key = tag.Key, Value = tag.Value });
+                Tags.Add(new Tag(tag.Key, tag.Value));
             }
             nodes = _nodes;
-            DrawingTools.SplitToSegments(nodes, segments, isInner);
+            _isInner = isInner;
+            DrawingTools.SplitToSegments(nodes, segments, isInner, _way);
             shapes = new ObservableCollection<IShape>(segments);
             foreach (var shape in shapes)
             {
@@ -35,7 +36,14 @@ namespace Digital_twin.Dataset.Types.Canvas
         }
 
 
-        public Way Way { get { return way; } }
+        public Way Way { get { return way; } 
+            set {
+                way = value;
+                foreach(Segment segment in segments)
+                {
+                    segment.way = way;
+                }
+            } }
         public ObservableCollection<Node> Nodes { get { return nodes; } }
         public ObservableCollection<Segment> Segments { get { return segments; } }
 
@@ -44,6 +52,18 @@ namespace Digital_twin.Dataset.Types.Canvas
             segment.obj = this;
             segments.Add(segment);  
             shapes.Add(segment);
+        }
+
+        public void ReloadSegments(ObservableCollection<Node> _nodes)
+        {
+            Segments.Clear();
+            nodes = _nodes;
+            DrawingTools.SplitToSegments(nodes, Segments, _isInner, way);
+            shapes = new ObservableCollection<IShape>(segments);
+            foreach (var shape in shapes)
+            {
+                shape.obj = this;
+            }
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Digital_twin.Dataset.Types.Canvas
             this.node = _node;
             foreach (var tag in node.Tags)
             {
-                Tags.Add(new Tag { Key = tag.Key, Value = tag.Value });
+                Tags.Add(new Tag(tag.Key, tag.Value));
             }
             Point shape = DrawingTools.CreatePointFromNode(node);
             shape.X -= 2.5; shape.Y -= 2.5;

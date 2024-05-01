@@ -22,12 +22,12 @@ namespace Digital_twin.Dataset.Types.Canvas
             way = _way;
             foreach (var tag in way.Tags)
             {
-                Tags.Add(new Tag { Key = tag.Key, Value = tag.Value });
+                Tags.Add(new Tag(tag.Key,tag.Value));
             }
             nodes = _nodes;
             innerFill = new Polygon(isInner);
             innerFill.obj = this;
-            DrawingTools.SplitToSegments(nodes, walls, isInner);
+            DrawingTools.SplitToSegments(nodes, walls, isInner, _way);
             DrawingTools.CreatePolygons(nodes, innerFill);
             shapes = new ObservableCollection<IShape>(walls);
             foreach(var shape in shapes)

@@ -91,6 +91,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Dataset\Support\DecimalToPercentageConverter.cs" />
+    <Compile Include="Dataset\Support\IdGenerator.cs" />
     <Compile Include="Dataset\Support\ObservableCollectionToPointCollectionConverter.cs" />
     <Compile Include="Dataset\Support\VisibilityToIsHitTestVisibleConverter.cs" />
     <Compile Include="Dataset\Types\Canvas\ClosedWayObject.cs" />
@@ -102,6 +103,7 @@
     <Compile Include="File tools\MergeTools.cs" />
     <Compile Include="File tools\SupportingFileTools.cs" />
     <Compile Include="RelayButtons\AddLevel.cs" />
+    <Compile Include="RelayButtons\AddRecommendedTag.cs" />
     <Compile Include="RelayButtons\AddTag.cs" />
     <Compile Include="RelayButtons\MoveLevelDown.cs" />
     <Compile Include="RelayButtons\MoveLevelUp.cs" />

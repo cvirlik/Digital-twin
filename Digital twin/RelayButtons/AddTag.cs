@@ -22,7 +22,7 @@ namespace Digital_twin.RelayButtons
             }
             else
             {
-                dataManager.SelectedShape.obj.Tags.Add(new Tag { Key = key, Value = value });
+                dataManager.SelectedShape.obj.Tags.Add(new Tag(key, value));
             }
 
             dataManager.KeyText = string.Empty;

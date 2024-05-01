@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Digital_twin.Dataset.Types.Primary
 {
-    public class Point : ViewModelBase, IShape
+    public class Point : IShape
     {
         private double x;
         public double X
@@ -55,7 +55,6 @@ namespace Digital_twin.Dataset.Types.Primary
             }
         }
 
-        public CanvasObject obj { get; set; }
         public ObservableCollection<Tag> Tags
         {
             get { return obj.Tags; }

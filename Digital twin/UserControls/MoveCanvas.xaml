@@ -35,6 +35,10 @@
                     <Setter Property="Stroke" Value="#FF3453B5"/>
                     <Setter Property="StrokeThickness" Value="6"/>
                 </MultiDataTrigger>
+                <DataTrigger Binding="{Binding IsObjectSelected}" Value="True">
+                    <Setter Property="Stroke" Value="#FF3453B5"/>
+                    <Setter Property="StrokeThickness" Value="6"/>
+                </DataTrigger>
             </Style.Triggers>
         </Style>
 
@@ -59,6 +63,9 @@
                     </MultiDataTrigger.Conditions>
                     <Setter Property="Fill" Value="Blue"/>
                 </MultiDataTrigger>
+                <DataTrigger Binding="{Binding IsObjectSelected}" Value="True">
+                    <Setter Property="Fill" Value="Blue"/>
+                </DataTrigger>
             </Style.Triggers>
         </Style>
 

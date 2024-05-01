@@ -35,6 +35,10 @@
                     <Setter Property="Stroke" Value="#FF3453B5"/>
                     <Setter Property="StrokeThickness" Value="6"/>
                 </MultiDataTrigger>
+                <DataTrigger Binding="{Binding IsObjectSelected}" Value="True">
+                    <Setter Property="Stroke" Value="#FF3453B5"/>
+                    <Setter Property="StrokeThickness" Value="6"/>
+                </DataTrigger>
             </Style.Triggers>
         </Style>
 
@@ -65,6 +69,9 @@
                     </MultiDataTrigger.Conditions>
                     <Setter Property="Fill" Value="Blue"/>
                 </MultiDataTrigger>
+                <DataTrigger Binding="{Binding IsObjectSelected}" Value="True">
+                    <Setter Property="Fill" Value="Blue"/>
+                </DataTrigger>
             </Style.Triggers>
         </Style>
 
@@ -98,7 +105,7 @@
         </DataTemplate>
     </UserControl.Resources>
 
-    <Grid Height="400" Width="500">
+    <Grid Height="400" Width="500" x:Name="theGrid" Focusable="True" IsVisibleChanged="TheGrid_OnIsVisibleChanged"  KeyDown="OnKeyDownHandler">
         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
         <ListBox x:Name="CanvasListBox" ItemsSource="{Binding SelectedLevel.shapes}" SelectedItem="{Binding SelectedShape}" 
                  Height="400" Width="500"

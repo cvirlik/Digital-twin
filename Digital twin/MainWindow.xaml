@@ -6,7 +6,8 @@
         xmlns:template="clr-namespace:Digital_twin.Dataset.Support"
         xmlns:userControls="clr-namespace:Digital_twin.UserControls"
         mc:Ignorable="d"
-        Title="Digital Twin" Height="700" Width="900">
+        Title="Digital Twin" Height="700" Width="900"
+        Cursor="{Binding CurrentCursor}">
 
     <Window.Resources>
         <template:PointToMarginConverter x:Key="PointToMarginConverter"/>
@@ -55,7 +56,14 @@
                     <RowDefinition Height="1.5*"/>
                     <RowDefinition Height="8.5*"/>
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Text="{Binding CurrentTipText}" TextWrapping="Wrap" Margin="0,0,0,10"/>
+                <Grid Grid.Row="0" VerticalAlignment="Top"  Margin="0,10,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Grid.Column="0" VerticalAlignment="Top" Margin="0,3,0,0" Source="Icons/Question.png" Height="20" Width="20"/>
+                    <TextBlock Grid.Column="1" VerticalAlignment="Top" Text="{Binding CurrentTipText}" TextWrapping="Wrap"/>
+                </Grid>
                 <StackPanel Grid.Row="1" Orientation="Vertical">
                     <StackPanel.Style>
                         <Style TargetType="StackPanel">
@@ -102,7 +110,10 @@
                                  Command="{Binding AddCommand}" Margin="2" BorderThickness="1">
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
-                                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="2" CornerRadius="5">
+                                    <Border Background="{TemplateBinding Background}" 
+                                            BorderBrush="{TemplateBinding BorderBrush}" 
+                                            BorderThickness="2" 
+                                            CornerRadius="5">
                                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     </Border>
                                 </ControlTemplate>
@@ -111,6 +122,52 @@
                         </Button>
                     </Grid>
                     <Button Content="Delete Tag" Command="{Binding RemoveCommand}" Margin="0,0,0,5"/>
+                    <ListView ItemsSource="{Binding RecommendedTags}" x:Name="RecommendedTagsListView">
+                        <ListView.View>
+                            <GridView>
+                                <GridView.ColumnHeaderContainerStyle>
+                                    <Style TargetType="{x:Type GridViewColumnHeader}">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </Style>
+                                </GridView.ColumnHeaderContainerStyle>
+                                <GridViewColumn Width="200">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock HorizontalAlignment="Left">
+                                                <TextBlock.Text>
+                                                    <MultiBinding StringFormat="{}{0} : {1}">
+                                                        <Binding Path="Key" />
+                                                        <Binding Path="Value" />
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Width="50">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button  Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Right" Height="15" Width="15" 
+                                                     Command="{Binding DataContext.AddRecommendedTag, ElementName=RecommendedTagsListView}" Margin="2"
+                                                     CommandParameter="{Binding}">
+                                                <Button.Template>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border Background="{TemplateBinding Background}" 
+                                                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                                                BorderThickness="0" 
+                                                                CornerRadius="5">
+                                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                        </Border>
+                                                    </ControlTemplate>
+                                                </Button.Template>
+                                                <Image Source="Icons/Plus.png"/>
+                                            </Button>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
                 </StackPanel>
                 
                 <StackPanel Grid.Row="1">
@@ -156,7 +213,7 @@
                          ItemContainerStyle="{StaticResource HighlightSelectedItemStyle}" Margin="0,0,0,5">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Name, StringFormat='Level {0}'}"/>
+                            <TextBlock Text="{Binding Name, StringFormat='Floor {0}'}"/>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>

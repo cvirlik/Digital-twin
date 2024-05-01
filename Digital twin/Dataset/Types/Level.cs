@@ -1,6 +1,5 @@
 ﻿using Digital_twin.Dataset.Types.Primary;
 using Digital_twin.Dataset.Types.Canvas;
-using System;
 using System.Collections.ObjectModel;
 
 namespace Digital_twin.Dataset.Types
@@ -51,6 +50,14 @@ namespace Digital_twin.Dataset.Types
                 {
                     addedShapes.Add(shape);
                 }
+            }
+        }
+        public void DeleteObject(CanvasObject obj)
+        {
+            canvasObjects.Remove(obj);
+            foreach (IShape shape in obj.Shapes)
+            {
+                Shapes.Remove(shape);
             }
         }
 
