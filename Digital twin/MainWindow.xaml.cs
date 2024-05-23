@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Digital_twin.Dataset;
+using Digital_twin.Dataset.Support.Actions;
 
 namespace Digital_twin
 {
@@ -22,9 +23,18 @@ namespace Digital_twin
     /// </summary>
     public partial class MainWindow : Window
     {
+        DataManager dataManager;
         public MainWindow()
         {
             InitializeComponent();
+        }
+        private void Window_Undo(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Z && Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                if (dataManager == null) dataManager = this.DataContext as DataManager;
+                dataManager.actionList.DeleteAction();
+            }
         }
     }
 }

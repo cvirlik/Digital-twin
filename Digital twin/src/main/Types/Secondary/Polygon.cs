@@ -1,8 +1,6 @@
 ﻿using Digital_twin.Dataset.Types.Primary;
-using Digital_twin.Dataset.Types.Canvas;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Windows.Media;
 
 namespace Digital_twin.Dataset.Types.Secondary
 {
@@ -44,6 +42,12 @@ namespace Digital_twin.Dataset.Types.Secondary
         {
             vertices.Add(point);
             Vertices.Add(new System.Windows.Point(point.X, point.Y));
+        }
+
+        public void UpdateVertex(int i, double x, double y)
+        {
+            Vertices[i] = new System.Windows.Point(x, y);
+            UpdateVertices();
         }
 
         public bool IsSelected

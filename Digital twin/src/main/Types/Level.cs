@@ -61,6 +61,15 @@ namespace Digital_twin.Dataset.Types
             }
         }
 
+        public void DeleteActiveObject(CanvasObject obj)
+        {
+            addedElements.Remove(obj);
+            foreach (IShape shape in obj.Shapes)
+            {
+                AddedShapes.Remove(shape);
+            }
+        }
+
         public int LevelNum { get { return level; } }  
         public string Name { get { return level.ToString(); } set { level = int.Parse(value); OnPropertyChanged(nameof(Name)); } }  
     }

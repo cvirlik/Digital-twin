@@ -5,10 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Collections.ObjectModel;
 using Digital_twin.Dataset;
-using Digital_twin.Dataset.Support;
 using Digital_twin.Dataset.Types.Tertiary;
 using Digital_twin.Dataset.Types;
-using Digital_twin.Draw_tools;
 
 namespace Digital_twin.File_tools
 {

@@ -9,7 +9,7 @@ using System.Windows.Media;
 using Digital_twin.Dataset.Support;
 using Digital_twin.Dataset.Types.Canvas;
 using Digital_twin.Dataset.Types.Secondary;
-
+using Digital_twin.Dataset.Support.Actions;
 namespace Digital_twin.UserControls
 {
     public partial class MoveCanvas : UserControl
@@ -90,6 +90,7 @@ namespace Digital_twin.UserControls
             
         }
 
+        private MoveAction moveAction = null;
         private void Canvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             isDragging = false;
@@ -98,6 +99,11 @@ namespace Digital_twin.UserControls
                 double X, Y;
                 (X, Y) = GpsUtils.CanvasToMeters(point.X, point.Y);
                 (point.node.Latitude, point.node.Longitude) = GpsUtils.MetersToLatLon(X, Y);
+            } 
+            if(moveAction != null)
+            {
+                dataManager.actionList.AddAction(moveAction);
+                moveAction = null;
             }
             editingShape = null;
         }
@@ -108,12 +114,17 @@ namespace Digital_twin.UserControls
             return false;
         }
 
+
         private void Canvas_MouseMove(object sender, MouseEventArgs e)
         {
             if (isDragging)
             {
                 if (editingShape is Dataset.Types.Primary.Point point)
                 {
+                    if(moveAction == null)
+                    {
+                        moveAction = new MoveAction();
+                    }
                     var position = e.GetPosition(CanvasListBox);
                     if(obj != null)
                     {
@@ -138,24 +149,28 @@ namespace Digital_twin.UserControls
                             {
                                 if ((int)closed.Polygon.Vertices[i].X == (int)point.X && (int)closed.Polygon.Vertices[i].Y == (int)point.Y)
                                 {
-                                    closed.Polygon.Vertices[i] = new System.Windows.Point(position.X - 5, position.Y - 5);
-                                    closed.Polygon.UpdateVertices();
+                                    moveAction.SetPolygonInfo(closed, i, closed.Polygon.Vertices[i].X, closed.Polygon.Vertices[i].Y);
+                                    closed.Polygon.UpdateVertex(i, position.X - 5, position.Y - 5);
                                 }
                             }
+                            moveAction.SetFinish();
                         }
                         foreach(Segment segment in segmentsToUpdate1)
                         {
+                            moveAction.AddEvent(segment.Point1, segment.Point1.X, segment.Point1.Y);
                             segment.Point1.X = position.X - 5;
                             segment.Point1.Y = position.Y - 5;
                             segment.Point1.UpdateNodeCoordinates();
                         }
                         foreach (Segment segment in segmentsToUpdate2)
                         {
+                            moveAction.AddEvent(segment.Point2, segment.Point2.X, segment.Point2.Y);
                             segment.Point2.X = position.X - 5;
                             segment.Point2.Y = position.Y - 5;
                             segment.Point2.UpdateNodeCoordinates();
                         }
                     }
+                    moveAction.AddEvent(point, point.X, point.Y);
                     point.X = position.X - 5;
                     point.Y = position.Y - 5;
                     point.UpdateNodeCoordinates();

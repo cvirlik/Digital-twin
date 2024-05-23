@@ -18,7 +18,8 @@
                 <Ellipse.RenderTransform>
                     <TransformGroup>
                         <TranslateTransform X="{Binding X}" Y="{Binding Y}" />
-                        <RotateTransform Angle="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:LineCanvas}}, Path=Angle}" CenterX="225" CenterY="200"/>
+                        <RotateTransform Angle="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:LineCanvas}}, Path=Angle}" 
+                                         CenterX="225" CenterY="200"/>
                     </TransformGroup>
                 </Ellipse.RenderTransform>
             </Ellipse>

@@ -90,68 +90,82 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Dataset\Support\DecimalToPercentageConverter.cs" />
-    <Compile Include="Dataset\Support\IdGenerator.cs" />
-    <Compile Include="Dataset\Support\ObservableCollectionToPointCollectionConverter.cs" />
-    <Compile Include="Dataset\Support\VisibilityToIsHitTestVisibleConverter.cs" />
-    <Compile Include="Dataset\Types\Canvas\ClosedWayObject.cs" />
-    <Compile Include="Dataset\Types\Canvas\NodeObject.cs" />
-    <Compile Include="Dataset\Types\Canvas\OpenedWayObject.cs" />
-    <Compile Include="Dataset\Types\Tertiary\Door.cs" />
-    <Compile Include="Dataset\Types\Tertiary\Stairs.cs" />
-    <Compile Include="File tools\ImageLoader.cs" />
-    <Compile Include="File tools\MergeTools.cs" />
-    <Compile Include="File tools\SupportingFileTools.cs" />
-    <Compile Include="RelayButtons\AddLevel.cs" />
-    <Compile Include="RelayButtons\AddRecommendedTag.cs" />
-    <Compile Include="RelayButtons\AddTag.cs" />
-    <Compile Include="RelayButtons\MoveLevelDown.cs" />
-    <Compile Include="RelayButtons\MoveLevelUp.cs" />
-    <Compile Include="RelayButtons\RemoveTag.cs" />
-    <Compile Include="RelayButtons\SaveComand.cs" />
-    <Compile Include="UserControls\BackgroundImage.xaml.cs">
+    <Compile Include="src\main\Support\Actions\Action.cs" />
+    <Compile Include="src\main\Support\Actions\ActionList.cs" />
+    <Compile Include="src\main\Support\Actions\AddActions\AddNodeAction.cs" />
+    <Compile Include="src\main\Support\Actions\AddActions\CloseWayAction.cs" />
+    <Compile Include="src\main\Support\Actions\AddActions\DrawWayAction.cs" />
+    <Compile Include="src\main\Support\Actions\AddActions\RemovePlaceholder.cs" />
+    <Compile Include="src\main\Support\Actions\DeleteAction.cs" />
+    <Compile Include="src\main\Support\Actions\DrawAction.cs" />
+    <Compile Include="src\main\Support\Actions\MoveAction.cs" />
+    <Compile Include="src\main\Support\Actions\DeleteActions\NodeDelete.cs" />
+    <Compile Include="src\main\Support\Actions\ObjectTransform.cs" />
+    <Compile Include="src\main\Support\Actions\PointWithReturningPosition.cs" />
+    <Compile Include="src\main\Support\Actions\DeleteActions\WayCut.cs" />
+    <Compile Include="src\main\Support\Actions\DeleteActions\WaySeparation.cs" />
+    <Compile Include="src\main\Support\DecimalToPercentageConverter.cs" />
+    <Compile Include="src\main\Support\IdGenerator.cs" />
+    <Compile Include="src\main\Support\ObservableCollectionToPointCollectionConverter.cs" />
+    <Compile Include="src\main\Support\VisibilityToIsHitTestVisibleConverter.cs" />
+    <Compile Include="src\main\Types\Canvas\ClosedWayObject.cs" />
+    <Compile Include="src\main\Types\Canvas\NodeObject.cs" />
+    <Compile Include="src\main\Types\Canvas\OpenedWayObject.cs" />
+    <Compile Include="src\main\Types\Tertiary\Door.cs" />
+    <Compile Include="src\main\Types\Tertiary\Stairs.cs" />
+    <Compile Include="src\Utiles\File tools\ImageLoader.cs" />
+    <Compile Include="src\Utiles\File tools\MergeTools.cs" />
+    <Compile Include="src\Utiles\File tools\SupportingFileTools.cs" />
+    <Compile Include="src\UI\RelayButtons\AddLevel.cs" />
+    <Compile Include="src\UI\RelayButtons\AddRecommendedTag.cs" />
+    <Compile Include="src\UI\RelayButtons\AddTag.cs" />
+    <Compile Include="src\UI\RelayButtons\MoveLevelDown.cs" />
+    <Compile Include="src\UI\RelayButtons\MoveLevelUp.cs" />
+    <Compile Include="src\UI\RelayButtons\RemoveTag.cs" />
+    <Compile Include="src\UI\RelayButtons\SaveComand.cs" />
+    <Compile Include="src\UI\UserControls\BackgroundImage.xaml.cs">
       <DependentUpon>BackgroundImage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\BrowseImage.xaml.cs">
+    <Compile Include="src\UI\UserControls\BrowseImage.xaml.cs">
       <DependentUpon>BrowseImage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\BuildingView.xaml.cs">
+    <Compile Include="src\UI\UserControls\BuildingView.xaml.cs">
       <DependentUpon>BuildingView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\Draw.xaml.cs">
+    <Compile Include="src\UI\UserControls\Draw.xaml.cs">
       <DependentUpon>Draw.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\DrawLine.xaml.cs">
+    <Compile Include="src\UI\UserControls\DrawLine.xaml.cs">
       <DependentUpon>DrawLine.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\DrawPoint.xaml.cs">
+    <Compile Include="src\UI\UserControls\DrawPoint.xaml.cs">
       <DependentUpon>DrawPoint.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\Edit.xaml.cs">
+    <Compile Include="src\UI\UserControls\Edit.xaml.cs">
       <DependentUpon>Edit.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\EditCanvas.xaml.cs">
+    <Compile Include="src\UI\UserControls\EditCanvas.xaml.cs">
       <DependentUpon>EditCanvas.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\ImageControl.xaml.cs">
+    <Compile Include="src\UI\UserControls\ImageControl.xaml.cs">
       <DependentUpon>ImageControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\ImageTransform.xaml.cs">
+    <Compile Include="src\UI\UserControls\ImageTransform.xaml.cs">
       <DependentUpon>ImageTransform.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\LineCanvas.xaml.cs">
+    <Compile Include="src\UI\UserControls\LineCanvas.xaml.cs">
       <DependentUpon>LineCanvas.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\Move.xaml.cs">
+    <Compile Include="src\UI\UserControls\Move.xaml.cs">
       <DependentUpon>Move.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\MoveCanvas.xaml.cs">
+    <Compile Include="src\UI\UserControls\MoveCanvas.xaml.cs">
       <DependentUpon>MoveCanvas.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\PointCanvas.xaml.cs">
+    <Compile Include="src\UI\UserControls\PointCanvas.xaml.cs">
       <DependentUpon>PointCanvas.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\Search.xaml.cs">
+    <Compile Include="src\UI\UserControls\Search.xaml.cs">
       <DependentUpon>Search.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
@@ -162,90 +176,90 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Dataset\DataManager.cs" />
-    <Compile Include="Dataset\Parser.cs" />
-    <Compile Include="Dataset\Support\GPSTools.cs" />
-    <Compile Include="Dataset\Support\PointToMarginConverter.cs" />
-    <Compile Include="Dataset\Support\RelayCommand.cs" />
-    <Compile Include="Dataset\Support\ShapeTemplateSelector.cs" />
-    <Compile Include="Dataset\Types\Secondary\Tag.cs" />
-    <Compile Include="Dataset\Types\Tertiary\Building.cs" />
-    <Compile Include="Dataset\Support\ViewModelBase.cs" />
-    <Compile Include="Dataset\Types\Level.cs" />
-    <Compile Include="Dataset\Types\Primary\IShape.cs" />
-    <Compile Include="Dataset\Types\Primary\Point.cs" />
-    <Compile Include="Dataset\Types\Tertiary\Room.cs" />
-    <Compile Include="Dataset\Types\Secondary\Polygon.cs" />
-    <Compile Include="Dataset\Types\Secondary\Segment.cs" />
-    <Compile Include="Dataset\Types\Canvas\CanvasObject.cs" />
-    <Compile Include="Draw tools\DrawingTools.cs" />
-    <Compile Include="File tools\ReaderOSM.cs" />
-    <Compile Include="File tools\WriterOSM.cs" />
+    <Compile Include="src\main\DataManager.cs" />
+    <Compile Include="src\main\Parser.cs" />
+    <Compile Include="src\main\Support\GPSTools.cs" />
+    <Compile Include="src\main\Support\PointToMarginConverter.cs" />
+    <Compile Include="src\main\Support\RelayCommand.cs" />
+    <Compile Include="src\main\Support\ShapeTemplateSelector.cs" />
+    <Compile Include="src\main\Types\Secondary\Tag.cs" />
+    <Compile Include="src\main\Types\Tertiary\Building.cs" />
+    <Compile Include="src\main\Support\ViewModelBase.cs" />
+    <Compile Include="src\main\Types\Level.cs" />
+    <Compile Include="src\main\Types\Primary\IShape.cs" />
+    <Compile Include="src\main\Types\Primary\Point.cs" />
+    <Compile Include="src\main\Types\Tertiary\Room.cs" />
+    <Compile Include="src\main\Types\Secondary\Polygon.cs" />
+    <Compile Include="src\main\Types\Secondary\Segment.cs" />
+    <Compile Include="src\main\Types\Canvas\CanvasObject.cs" />
+    <Compile Include="src\Utiles\Draw tools\DrawingTools.cs" />
+    <Compile Include="src\Utiles\File tools\ReaderOSM.cs" />
+    <Compile Include="src\Utiles\File tools\WriterOSM.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Styles\Styles.xaml">
+    <Page Include="src\UI\Styles\Styles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControls\BackgroundImage.xaml">
+    <Page Include="src\UI\UserControls\BackgroundImage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControls\BrowseImage.xaml">
+    <Page Include="src\UI\UserControls\BrowseImage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControls\BuildingView.xaml">
+    <Page Include="src\UI\UserControls\BuildingView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControls\Draw.xaml">
+    <Page Include="src\UI\UserControls\Draw.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControls\DrawLine.xaml">
+    <Page Include="src\UI\UserControls\DrawLine.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControls\DrawPoint.xaml">
+    <Page Include="src\UI\UserControls\DrawPoint.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControls\Edit.xaml">
+    <Page Include="src\UI\UserControls\Edit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControls\EditCanvas.xaml">
+    <Page Include="src\UI\UserControls\EditCanvas.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControls\ImageControl.xaml">
+    <Page Include="src\UI\UserControls\ImageControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControls\ImageTransform.xaml">
+    <Page Include="src\UI\UserControls\ImageTransform.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControls\LineCanvas.xaml">
+    <Page Include="src\UI\UserControls\LineCanvas.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControls\Move.xaml">
+    <Page Include="src\UI\UserControls\Move.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControls\MoveCanvas.xaml">
+    <Page Include="src\UI\UserControls\MoveCanvas.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControls\PointCanvas.xaml">
+    <Page Include="src\UI\UserControls\PointCanvas.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControls\Search.xaml">
+    <Page Include="src\UI\UserControls\Search.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -268,9 +282,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="OSM files\map.osm">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -281,26 +292,27 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\BrowseImage.png" />
-    <Resource Include="Icons\Edit.png" />
-    <Resource Include="Icons\Line.png" />
-    <Resource Include="Icons\Move.png" />
-    <Resource Include="Icons\Point.png" />
-    <Resource Include="Icons\Question.png" />
-    <Resource Include="Icons\Transform.png" />
+    <Resource Include="src\UI\Icons\BrowseImage.png" />
+    <Resource Include="src\UI\Icons\Edit.png" />
+    <Resource Include="src\UI\Icons\Line.png" />
+    <Resource Include="src\UI\Icons\Move.png" />
+    <Resource Include="src\UI\Icons\Point.png" />
+    <Resource Include="src\UI\Icons\Question.png" />
+    <Resource Include="src\UI\Icons\Transform.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\File.png" />
+    <Resource Include="src\UI\Icons\File.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\cube-solid.png" />
+    <Resource Include="src\UI\Icons\cube-solid.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\Plus.png" />
+    <Resource Include="src\UI\Icons\Plus.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\eye-slash.png" />
-    <Resource Include="Icons\eye.png" />
+    <Resource Include="src\UI\Icons\eye-slash.png" />
+    <Resource Include="src\UI\Icons\eye.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

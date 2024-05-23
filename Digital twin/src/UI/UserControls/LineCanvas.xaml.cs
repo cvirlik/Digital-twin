@@ -24,7 +24,17 @@ namespace Digital_twin.UserControls
             InitializeComponent();
         }
         double pX = -1; double pY = -1;
+
+        public void SetXY(double x, double y)
+        {
+            pX = x; pY = y;
+        }
         double? startX, startY;
+        bool removeStart = false;
+        public void SetRemoveStart(bool value)
+        {
+            removeStart = value;
+        }
         private void DrawWay(DataManager dataManager, Point position)
         {
             if (!startX.HasValue)
@@ -35,13 +45,13 @@ namespace Digital_twin.UserControls
 
             if (pX == startX && pY == startY)
             {
-                DrawingTools.AddWay(position.X, position.Y, pX, pY, false, dataManager);
+                DrawingTools.AddWay(position.X, position.Y, pX, pY, removeStart, dataManager, this);
                 pX = position.X;
                 pY = position.Y;
             }
             else
             {
-                DrawingTools.AddWay(position.X, position.Y, pX, pY, true, dataManager);
+                DrawingTools.AddWay(position.X, position.Y, pX, pY, removeStart, dataManager, this);
                 pX = position.X;
                 pY = position.Y;
             }
@@ -50,9 +60,8 @@ namespace Digital_twin.UserControls
         private void Line_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             Console.WriteLine("Click on closing line");
-            DrawingTools.CloseWay(pX, pY, dataManager);
-            pX = -1; pY = -1;
-            startX = null; startY = null;
+            DrawingTools.CloseWay(pX, pY, dataManager, this);
+            ResetDrawing();
         }
 
 
@@ -81,18 +90,23 @@ namespace Digital_twin.UserControls
                 OnVisibilityCollapsed();
             }
         }
+        
+        public void ResetDrawing()
+        {
+            pX = -1; pY = -1;
+            removeStart = false;
+            startX = null; startY = null;
+        }
 
         private void OnVisibilityCollapsed()
         {
-            pX = -1; pY = -1;
-            startX = null; startY = null;
+            ResetDrawing();
         }
         private void OnKeyDownHandler(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Return)
             {
-                pX = -1; pY = -1;
-                startX = null; startY = null;
+                ResetDrawing();
                 DrawingTools.FinishWay(dataManager);
             }
         }

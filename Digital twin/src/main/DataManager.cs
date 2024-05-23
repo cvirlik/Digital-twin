@@ -1,4 +1,6 @@
 ﻿using Digital_twin.Dataset.Support;
+using Digital_twin.Dataset.Support.Actions;
+using Digital_twin.Dataset.Support.Actions.Transform;
 using Digital_twin.Dataset.Types;
 using Digital_twin.Dataset.Types.Canvas;
 using Digital_twin.Dataset.Types.Primary;
@@ -12,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -26,6 +29,7 @@ namespace Digital_twin.Dataset
         public static double minX = double.MaxValue;
         public static double minY = double.MaxValue;
         public IdGenerator _idGenerator = new IdGenerator();
+        public ActionList actionList = new ActionList(10);
         public ObservableCollection<Tag> _recommendedTags;
         public ObservableCollection<Tag> RecommendedTags
         {
@@ -39,6 +43,8 @@ namespace Digital_twin.Dataset
                 }
             }
         }
+        
+        
         public Cursor CurrentCursor
         {
             get
@@ -116,9 +122,9 @@ namespace Digital_twin.Dataset
                     case "Edit":
                         return "Click on item to change its properties";
                     case "Point":
-                        return "Click anywhere on a canvas to draw an element. To close a line, click on its first part. To end line press Enter.";
+                        return "Click anywhere on majorAxis canvas to draw an element. To close majorAxis line, click on its first part. To end line press Enter.";
                     case "Line":
-                        return "Click anywhere on a canvas to draw an element. To close a line, click on its first part. To end line press Enter.";
+                        return "Click anywhere on majorAxis canvas to draw an element. To close majorAxis line, click on its first part. To end line press Enter.";
                     case "Move":
                         return "Select item and use anchors to move it";
                     case "ImageTransform":
@@ -279,14 +285,12 @@ namespace Digital_twin.Dataset
                     _selectedShape.IsObjectSelected = true;
                     if(SelectedShape.obj is OpenedWayObject)
                     {
-                        Console.WriteLine("Open");
                         RecommendedTags = new ObservableCollection<Tag>()
                         {
                             new Tag("indoor", "pathway")
                         };
                     } else if(SelectedShape.obj is ClosedWayObject)
                     {
-                        Console.WriteLine("Close");
                         RecommendedTags = new ObservableCollection<Tag>()
                         {
                             new Tag("indoor", "room"),
@@ -295,7 +299,6 @@ namespace Digital_twin.Dataset
                     }
                     else if(SelectedShape.obj is NodeObject)
                     {
-                        Console.WriteLine("Node");
                         RecommendedTags = new ObservableCollection<Tag>()
                         {
                             new Tag("door", "hinged")
@@ -314,15 +317,19 @@ namespace Digital_twin.Dataset
         {
             if(SelectedShape != null)
             {
-                if (SelectedShape is Point point)
+                if (SelectedShape is Types.Primary.Point point)
                 {
+                    actionList.AddAction(new DeleteAction(new NodeDelete(point, this)));
+                    Console.WriteLine("Add NodeDelete. Current long: " + actionList.CurrentLenght());
                     Nodes.Remove(point.node);
                     SelectedLevel.DeleteObject(point.obj);
                 } 
                 if (SelectedShape is Segment segment)
                 {
+                    Console.WriteLine(segment.obj.GetType().Name);
                     List<long> nodes = segment.way.Nodes.ToList();
                     List<int> indices = nodes.Select((b, i) => b == (long)segment.Point1.node.Id ? i : -1).Where(i => i != -1).ToList();
+
                     if(segment.obj is ClosedWayObject)
                     {
                         List<long> newWayObject;
@@ -343,16 +350,22 @@ namespace Digital_twin.Dataset
 
 
                                 newWayObject = firstPart.Concat(secondPart).ToList();
-                                segment.way.Nodes = newWayObject.ToArray();
-                                OpenedWayObject openedWayObject =
-                                    new OpenedWayObject(Parser.getNodes(Nodes, newWayObject.ToArray()), segment.way, segment.IsInner);
+                                Way way = new Way();
+                                way.Nodes = new List<long>(segment.way.Nodes).ToArray();
+                                way.Tags = segment.way.Tags;
+                                way.Id = segment.way.Id;
 
+                                way.Nodes = newWayObject.ToArray();
+
+                                OpenedWayObject openedWayObject =
+                                    new OpenedWayObject(Parser.getNodes(Nodes, newWayObject.ToArray()), way, segment.IsInner);
+                                actionList.AddAction(new DeleteAction(new WaySeparation(segment.obj, openedWayObject, null, this)));
+                                Console.WriteLine("Add WaySeparation. Current long: " + actionList.CurrentLenght());
                                 SelectedLevel.DeleteObject(segment.obj);
                                 SelectedLevel.AddObjects(openedWayObject, true);
                                 break;
                             }
                         }
-                        
                     }
                     if (segment.obj is OpenedWayObject openedWay)
                     {
@@ -385,11 +398,17 @@ namespace Digital_twin.Dataset
 
                                     OpenedWayObject secondOpenedWayObject =
                                     new OpenedWayObject(Parser.getNodes(Nodes, secondWay.Nodes), secondWay, segment.IsInner);
+                                    actionList.AddAction(new DeleteAction(new WaySeparation(openedWay, firstOpenedWayObject, 
+                                        secondOpenedWayObject, this)));
+                                    Console.WriteLine("Add WaySeparation. Current long: " + actionList.CurrentLenght());
                                     SelectedLevel.DeleteObject(openedWay);
                                     SelectedLevel.AddObjects(firstOpenedWayObject, true);
                                     SelectedLevel.AddObjects(secondOpenedWayObject, true);
                                     break;
                                 }
+
+                                actionList.AddAction(new DeleteAction(new WayCut(openedWay, new List<long>(segment.way.Nodes), this)));
+                                Console.WriteLine("Add WayCut. Current long: " + actionList.CurrentLenght());
                                 SelectedLevel.DeleteObject(openedWay);
                                 openedWay.Way.Nodes = nodes.ToArray();
                                 openedWay.ReloadSegments(Parser.getNodes(Nodes, openedWay.Way.Nodes));
@@ -450,7 +469,8 @@ namespace Digital_twin.Dataset
             }
         }
 
-        public CanvasObject currentActiveObject;
+        public OpenedWayObject currentActiveObject;
         public Node startPoint;
+        
     }
 }
